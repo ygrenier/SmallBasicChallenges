@@ -12,9 +12,29 @@ This is not a real time communication system, only game that can be work turn-by
 
 The process :
 
-- Each program try to connect the system
-- When it's connected, the challenge start
-- While the challenge is running the progam play
+- Connection Phase
+	- Ask a connection to an opponent
+	- If Success save the connection info and go to Game Phase
+	- If too tries aborted
+	- Wait and restart the Connection Phase
+- Game Phase
+	- Ask game status from connection info
+	- If it the player turn
+		- Calculate his decision
+		- Send to server is decision and receive status
+		- If failed retry
+		- If game finished go to End Phase
+	- If it waiting oppoenent
+		- Wait and restart Game Phase
+	- If game finished go to End Phase
+	- Wait and restart Game Phase
+- End Phase
+	- Ask game result or history
+	- Display result
 
+## Small Basic Communication
+
+For the communication, Small Basic will use only the `Network.GetWebPageContents()`. So SB send information with the url query, and the server returns a string value in Small Basic Array format.
   
+
 
