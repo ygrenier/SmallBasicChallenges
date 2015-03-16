@@ -1,0 +1,195 @@
+' Configuration
+config["player"] = "Player 1"                       ' Name of the player
+config["server"] = "http://localhost:59559/game"    ' URL of the server 
+config["game"] = "test"                             ' Which game
+
+' Game info : start with initialisation state
+game = "state=init;tries=0;"
+gameStatus = ""
+
+' Init test
+currentPlayer = 1
+games[1]=game
+games[2]=game
+gamesStatus[1]=gameStatus
+gamesStatus[2]=gameStatus
+
+' Game loop
+While game["state"] <> ""
+  SbcGameLoop()
+EndWhile
+Program.End()
+
+' Called for initalize game
+Sub InitGame
+  TextWindow.WriteLine(currentPlayer + " - Connecting to server")
+  game["minval"]=1
+  game["maxval"]=100
+EndSub
+
+' Call when we need to treat play the game
+Sub PlayGame
+  ' Game is finished ?
+  
+  ' It's my turn ?
+  If gameStatus["player"] = game["playernum"] Then
+    ' Search value
+    num = game["maxval"] - game["minval"]
+    If num < 1 Then
+      num = 1
+    EndIf 
+    num = Math.GetRandomNumber(num) + game["minval"]
+    TextWindow.WriteLine(currentPlayer + "#" + gameStatus["turn"] + " => " + num)
+    playCommand = num
+    SbcPlay()
+    ' Our num is before this to found
+    If playResult["result"] = "before" Then
+      game["minval"] = num
+    ElseIf playResult["result"] = "after" Then
+      game["maxval"] = num
+    ElseIf playResult["result"] = "wins" Then
+      
+    EndIf
+    TextWindow.WriteLine(currentPlayer + ":" + " => " + playResult["result"] + " : "+ game["minval"] + " < num < " + game["maxval"])
+    TextWindow.Read()
+  Endif
+EndSub
+
+' Call when the game is finished
+Sub EndGame
+  TextWindow.WriteLine(currentPlayer + " - End : " + gameStatus)
+  TextWindow.Read()
+EndSub
+
+' Call when game failed : failMessage contains the message
+Sub FailedGame
+  TextWindow.WriteLine(currentPlayer + " - Failed : " + failMessage)
+  TextWindow.Read()
+EndSub
+
+' Call before run the gamme loop
+Sub BeforeGameLoop
+  ' Save states
+  games[currentPlayer] = game
+  gamesStatus[currentPlayer] = gameStatus
+  ' Switch players
+  If currentPlayer = 1 Then
+    currentPlayer = 2
+  Else
+    currentPlayer = 1
+  EndIf
+  ' Restore state
+  config["player"] = "Player " + currentPlayer
+  game = games[currentPlayer]
+  gameStatus = gamesStatus[currentPlayer]
+EndSub
+
+' Call after run the gamme loop
+Sub AfterGameLoop
+EndSub
+
+' Call when a player is connected
+Sub PlayerConnected
+  TextWindow.WriteLine("Connected as Player " + game["playernum"]  + " versus " + game["opponent"])
+EndSub
+
+' Call when a message need to be displayed : message contains the message
+Sub DisplayMessage
+  TextWindow.WriteLine(currentPlayer + " - " + message)
+  message = ""
+EndSub
+
+' ===== This part is the Small Basic Challenges process logic
+
+' Game loop
+Sub SbcGameLoop
+  BeforeGameLoop()
+  If game["state"] = "init" Then
+    InitGame()
+    game["state"] = "connect"
+  ElseIf game["state"] = "connect" Then
+    SbcConnect()
+  ElseIf game["state"] = "play" Then
+    SbcGetGameStatus()
+    If game["state"] = "play" Then
+      PlayGame()
+    Else
+      EndGame()
+      game["state"] = ""
+    EndIf
+  ElseIf game["state"] = "finished" Or game["state"] = "aborted" Then
+    EndGame()
+    game["state"] = ""
+  ElseIf game["state"] = "failed" Then
+    FailedGame()
+    game["state"] = ""
+  EndIf
+  AfterGameLoop()
+EndSub
+Sub SbcConnect
+  result = Network.GetWebPageContents(config["server"] + "/connect?game=" + config["game"] + "&player=" + config["player"])
+  ' Failed ?
+  If result = "" Then
+    message= "Connection failed"
+    DisplayMessage()
+    game["tries"] = game["tries"] +1
+    If game["tries"] > 5 Then
+      failMessage = "Too much connection tries"
+      game["state"] = "failed"
+    EndIf
+  ElseIf result["result"] = "failed" Then
+    message= "Failed to connect : " + result["message"]
+    DisplayMessage()
+    game["tries"] = game["tries"] +1
+    If game["tries"] > 5 Then
+      failMessage = "Too much connection tries"
+      game["state"] = "failed"
+    EndIf
+    ' Pause
+    Program.Delay(1000)
+  ElseIf result["result"] = "waiting" Then
+    message= "Waiting an opponent"
+    DisplayMessage()
+    ' Pause
+    Program.Delay(500)
+  ElseIf result["result"] = "connected" Then
+    game["tries"] = 0
+    game["token"] = result["token"]
+    game["playernum"] = result["playernum"]
+    game["opponent"] = result["opponent"]
+    game["state"] = "play"
+    PlayerConnected()
+  Else  
+    ' TextWindow.WriteLine(result)
+  EndIf
+EndSub
+Sub SbcGetGameStatus
+  result = Network.GetWebPageContents(config["server"] + "/status?token=" + game["token"])
+  ' Failed ?
+  If result = "" Then
+    message= "Status failed"
+    DisplayMessage()
+    game["tries"] = game["tries"] +1
+    If game["tries"] > 5 Then
+      failMessage = "Too much status tries"
+      game["state"] = "failed"
+    EndIf
+  ElseIf result["result"] = "failed" Then
+    message= "Failed to get the status : " + result["message"]
+    DisplayMessage()
+    game["tries"] = game["tries"] +1
+    If game["tries"] > 5 Then
+      failMessage = "Too much status tries"
+      game["state"] = "failed"
+    EndIf
+    ' Pause
+    Program.Delay(500)
+  ElseIf result["result"] = "success" Or result["result"] = "finished" Or result["result"] = "aborted" Then
+    game["tries"] = 0
+    gameStatus = result
+  EndIf
+EndSub
+Sub SbcPlay
+  playResult = Network.GetWebPageContents(config["server"] + "/play?token=" + game["token"] + "&command=" + playCommand)
+EndSub
+  

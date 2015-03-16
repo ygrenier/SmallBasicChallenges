@@ -36,5 +36,7 @@ The process :
 
 For the communication, Small Basic will use only the `Network.GetWebPageContents()`. So SB send information with the url query, and the server returns a string value in Small Basic Array format.
   
+### Connection
+
 
 
