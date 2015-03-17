@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace SmallBasicChallenges.Controllers
+namespace SmallBasicChallenges.WebSite.Controllers
 {
     public class HomeController : Controller
     {

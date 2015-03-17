@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace SmallBasicChallenges
+namespace SmallBasicChallenges.WebSite
 {
     public class FilterConfig
     {

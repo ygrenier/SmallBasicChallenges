@@ -5,7 +5,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
-namespace SmallBasicChallenges.Controllers
+namespace SmallBasicChallenges.WebSite.Controllers
 {
     /// <summary>
     /// Game controller

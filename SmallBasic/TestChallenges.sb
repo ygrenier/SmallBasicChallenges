@@ -1,6 +1,6 @@
 ' Configuration
 config["player"] = "Player 1"                       ' Name of the player
-config["server"] = "http://localhost:59559/game"    ' URL of the server 
+config["server"] = "http://localhost:62627/game"    ' URL of the server 
 config["game"] = "test"                             ' Which game
 
 ' Game info : start with initialisation state
