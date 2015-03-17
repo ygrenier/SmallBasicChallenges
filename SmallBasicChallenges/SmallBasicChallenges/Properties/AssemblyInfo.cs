@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // Les informations générales relatives à un assembly dépendent de 
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
-[assembly: AssemblyTitle("ChallengeEngine")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("SmallBasicChallenges")]
+[assembly: AssemblyDescription("Core library for the Small Basic Challenges")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ChallengeEngine")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCompany("Yan Grenier")]
+[assembly: AssemblyProduct("SmallBasicChallenges")]
+[assembly: AssemblyCopyright("Copyright © Yan Grenier 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Le GUID suivant est pour l'ID de la typelib si ce projet est exposé à COM
-[assembly: Guid("7e29250c-a13d-45c6-8ae3-8eaa16fbcac4")]
+[assembly: Guid("6841d5cd-887c-4fd7-84a6-33f35d8ec356")]
 
 // Les informations de version pour un assembly se composent des quatre valeurs suivantes :
 //
