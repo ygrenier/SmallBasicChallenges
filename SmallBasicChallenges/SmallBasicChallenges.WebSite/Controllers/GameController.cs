@@ -188,6 +188,7 @@ namespace SmallBasicChallenges.WebSite.Controllers
         }
         #endregion
 
+        static MemoryDataService dataService = new MemoryDataService();
 
         ActionResult GameResult(Object content)
         {
@@ -221,6 +222,13 @@ namespace SmallBasicChallenges.WebSite.Controllers
         {
             try
             {
+                // Create the context
+                var context = new SbcContext(dataService);
+
+                // Try to connect the player
+                var session = context.ConnectPlayer(player, this.Request.UserHostAddress, game);
+
+
                 // Encode the playerId : Name + gametype + IP
                 String playerID = String.Format("{0}-{1}-{2}", CleanPlayerName(player), game, this.Request.UserHostAddress);
 
