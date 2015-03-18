@@ -14,6 +14,21 @@ namespace SmallBasicChallenges
     {
 
         /// <summary>
+        /// Get the opponent of a player
+        /// </summary>
+        /// <param name="player">Player searching for the opponent</param>
+        /// <returns>Returns the opponent, or null if the player is not in the game</returns>
+        public SessionPlayer GetOpponent(SessionPlayer player)
+        {
+            if (player == null || Player1 == null || Player2 == null) return null;
+            if (player == Player1 || player.PlayerToken == Player1.PlayerToken)
+                return Player2;
+            if (player == Player2 || player.PlayerToken == Player2.PlayerToken)
+                return Player1;
+            return null;
+        }
+
+        /// <summary>
         /// Unique session ID
         /// </summary>
         public String SessionID { get; set; }

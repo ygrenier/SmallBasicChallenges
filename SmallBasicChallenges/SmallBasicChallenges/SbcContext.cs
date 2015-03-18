@@ -50,14 +50,52 @@ namespace SmallBasicChallenges
             var player = DataService.FindSessionPlayerByPlayerID(playerID);
 
             // If we have a player, get the session game
-            if (player != null)
+            if (player != null && player.PlayerToken != null)
             {
-                //var session = DataService.GetGameFromToken(player.PlayerToken);
-
+                // Get the session and load all players
+                var session = DataService.GetGameSessionFromPlayer(player);
+                // Get the opponent
+                var opponentPlayer = session.GetOpponent(player);
+                // If the player is connecting, then he become connected
+                if (player.Status == SessionPlayerStatus.Connecting)
+                    player.Status = SessionPlayerStatus.Connected;
+                // If the two players are connected the game is ready to start
+                if (player.Status == SessionPlayerStatus.Connected && opponentPlayer.Status == SessionPlayerStatus.Connected)
+                    session.Status = GameSessionStatus.Connected;
+                // Return the session
+                return session;
             }
 
-            throw new NotImplementedException();
+            // Search an opponent in the waiting list
+            var opponent = DataService.GetWaitingPlayer(game, playerID);
 
+            // If we find an opponent
+            if (opponent != null)
+            {
+                // Prepare opponent
+                opponent.PlayerToken = Guid.NewGuid().ToString();
+                opponent.Game=game;
+                opponent.PlayerNum = 1;
+                opponent.Status = opponent.Status == SessionPlayerStatus.Waiting ? SessionPlayerStatus.Connecting : opponent.Status;
+                // Create player
+                player = new SessionPlayer() {
+                    PlayerToken = Guid.NewGuid().ToString(),
+                    PlayerID = playerID,
+                    PlayerName = playerName,
+                    IpAddress = ipAddress,
+                    Game = game,
+                    PlayerNum = 2,
+                    Status = SessionPlayerStatus.Waiting
+                };
+                // Create a new session game
+                return DataService.CreateGameSession(game, opponent, player);
+            }
+
+            // Register the player in the wainting list
+            DataService.RegisterInWaitingList(game, playerID, playerName, ipAddress);
+
+            // The player is in the waiting list so we returns nothing
+            return null;
         }
 
         /// <summary>

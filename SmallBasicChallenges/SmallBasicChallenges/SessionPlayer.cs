@@ -29,6 +29,10 @@ namespace SmallBasicChallenges
         /// </summary>
         public String IpAddress { get; set; }
         /// <summary>
+        /// The game type playing
+        /// </summary>
+        public String Game { get; set; }
+        /// <summary>
         /// Number of the player
         /// </summary>
         public int PlayerNum { get; set; }
