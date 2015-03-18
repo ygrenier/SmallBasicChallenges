@@ -58,10 +58,16 @@ namespace SmallBasicChallenges
                 var opponentPlayer = session.GetOpponent(player);
                 // If the player is connecting, then he become connected
                 if (player.Status == SessionPlayerStatus.Connecting)
+                {
                     player.Status = SessionPlayerStatus.Connected;
+                    player.StatusChanged = DateTime.Now;
+                }
                 // If the two players are connected the game is ready to start
                 if (player.Status == SessionPlayerStatus.Connected && opponentPlayer.Status == SessionPlayerStatus.Connected)
+                {
                     session.Status = GameSessionStatus.Connected;
+                    session.StatusChanged = DateTime.Now;
+                }
                 // Return the session
                 return session;
             }
@@ -77,6 +83,8 @@ namespace SmallBasicChallenges
                 opponent.Game=game;
                 opponent.PlayerNum = 1;
                 opponent.Status = opponent.Status == SessionPlayerStatus.Waiting ? SessionPlayerStatus.Connecting : opponent.Status;
+                opponent.StatusChanged = DateTime.Now;
+
                 // Create player
                 player = new SessionPlayer() {
                     PlayerToken = Guid.NewGuid().ToString(),
@@ -85,8 +93,10 @@ namespace SmallBasicChallenges
                     IpAddress = ipAddress,
                     Game = game,
                     PlayerNum = 2,
-                    Status = SessionPlayerStatus.Waiting
+                    Status = SessionPlayerStatus.Waiting,
+                    StatusChanged = DateTime.Now
                 };
+
                 // Create a new session game
                 return DataService.CreateGameSession(game, opponent, player);
             }

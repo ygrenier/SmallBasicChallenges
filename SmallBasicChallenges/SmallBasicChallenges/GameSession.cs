@@ -47,6 +47,11 @@ namespace SmallBasicChallenges
         /// Status of the session
         /// </summary>
         public GameSessionStatus Status { get; set; }
+
+        /// <summary>
+        /// Date of the player status changed last time
+        /// </summary>
+        public DateTime StatusChanged { get; set; }
     }
 
     /// <summary>

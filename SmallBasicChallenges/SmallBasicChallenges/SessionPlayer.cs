@@ -40,6 +40,10 @@ namespace SmallBasicChallenges
         /// The player status
         /// </summary>
         public SessionPlayerStatus Status { get; set; }
+        /// <summary>
+        /// Date of the player status changed last time
+        /// </summary>
+        public DateTime StatusChanged { get; set; }
     }
 
     /// <summary>
