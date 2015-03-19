@@ -12,6 +12,18 @@ namespace SmallBasicChallenges
     /// </summary>
     public class GameSession
     {
+        /// <summary>
+        /// Find a player from the id
+        /// </summary>
+        public SessionPlayer GetPlayerFromID(String id)
+        {
+            if (String.IsNullOrWhiteSpace(id) || Player1 == null || Player2 == null) return null;
+            if (String.Equals(id, Player1.PlayerID, StringComparison.OrdinalIgnoreCase))
+                return Player1;
+            if (String.Equals(id, Player2.PlayerID, StringComparison.OrdinalIgnoreCase))
+                return Player2;
+            return null;
+        }
 
         /// <summary>
         /// Get the opponent of a player
@@ -42,6 +54,11 @@ namespace SmallBasicChallenges
         /// The second player
         /// </summary>
         public SessionPlayer Player2 { get; set; }
+
+        /// <summary>
+        /// Type of the game
+        /// </summary>
+        public String Game { get; set; }
 
         /// <summary>
         /// Status of the session

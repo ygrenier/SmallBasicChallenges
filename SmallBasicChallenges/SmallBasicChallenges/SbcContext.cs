@@ -46,8 +46,8 @@ namespace SmallBasicChallenges
             // Calculate the player ID : Name + gametype + IP
             String playerID = String.Format("{0}-{1}-{2}", CleanPlayerName(playerName), game, ipAddress);
 
-            // Search a session for the player
-            var player = DataService.FindSessionPlayerByPlayerID(playerID);
+            // Search an active session for the player
+            var player = DataService.FindActiveSessionPlayerByPlayerID(playerID);
 
             // If we have a player, get the session game
             if (player != null && player.PlayerToken != null)

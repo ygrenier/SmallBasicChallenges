@@ -12,13 +12,16 @@ namespace SmallBasicChallenges
     /// </summary>
     public class MemoryDataService : IDataService
     {
+        List<SessionPlayer> _WaitingPlayers = new List<SessionPlayer>();
+        List<SessionPlayer> _ActivePlayerSessions = new List<SessionPlayer>();
+        Dictionary<String, GameSession> _GameSessions = new Dictionary<String, GameSession>();
 
         /// <summary>
-        /// Find a player session by the player ID
+        /// Find an active player session by the player ID
         /// </summary>
-        public SessionPlayer FindSessionPlayerByPlayerID(string playerID)
+        public SessionPlayer FindActiveSessionPlayerByPlayerID(string playerID)
         {
-            throw new NotImplementedException();
+            return _ActivePlayerSessions.Where(sp => String.Equals(playerID, sp.PlayerID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
         }
 
         /// <summary>
@@ -26,7 +29,7 @@ namespace SmallBasicChallenges
         /// </summary>
         public GameSession GetGameSessionFromPlayer(SessionPlayer player)
         {
-            throw new NotImplementedException();
+            return _GameSessions[player.GameSession];
         }
 
         /// <summary>
@@ -37,7 +40,15 @@ namespace SmallBasicChallenges
         /// <returns>A player waiting or null</returns>
         public SessionPlayer GetWaitingPlayer(String game, String playerID)
         {
-            throw new NotImplementedException();
+            // Clean the waiting list
+            while (_WaitingPlayers.Count > 0 && _WaitingPlayers[0].StatusChanged < DateTime.Now.AddSeconds(-1))
+                _WaitingPlayers.RemoveAt(0);
+            // Search a player
+            return _WaitingPlayers
+                .FirstOrDefault(p => 
+                    String.Equals(game, p.Game, StringComparison.OrdinalIgnoreCase) 
+                    && !String.Equals(playerID, p.PlayerID, StringComparison.OrdinalIgnoreCase)
+                    );
         }
 
         /// <summary>
@@ -48,7 +59,30 @@ namespace SmallBasicChallenges
         /// <returns>The new session</returns>
         public GameSession CreateGameSession(string game, SessionPlayer player1, SessionPlayer player2)
         {
-            throw new NotImplementedException();
+            var result = new GameSession() {
+                SessionID = Guid.NewGuid().ToString(),
+                Player1 = player1,
+                Player2 = player2,
+                Game = game,
+                Status = GameSessionStatus.Connecting,
+                StatusChanged = DateTime.Now
+            };
+            if (player1.PlayerToken == null)
+                player1.PlayerToken = Guid.NewGuid().ToString();
+            if (player2.PlayerToken == null)
+                player2.PlayerToken = Guid.NewGuid().ToString();
+            player1.GameSession = result.SessionID;
+            player1.PlayerNum = 1;
+            player1.Game = game;
+            player2.GameSession = result.SessionID;
+            player2.PlayerNum = 2;
+            player1.Game = game;
+            if (!_ActivePlayerSessions.Contains(player1))
+                _ActivePlayerSessions.Add(player1);
+            if (!_ActivePlayerSessions.Contains(player2))
+                _ActivePlayerSessions.Add(player2);
+            _GameSessions[result.SessionID] = result;
+            return result;
         }
 
         /// <summary>
@@ -61,7 +95,19 @@ namespace SmallBasicChallenges
         /// <returns>The new session player</returns>
         public SessionPlayer RegisterInWaitingList(string game, string playerID, string playerName, string ipAddress)
         {
-            throw new NotImplementedException();
+            var result = new SessionPlayer() {
+                PlayerToken = null,
+                PlayerID = playerID,
+                PlayerName = playerName,
+                IpAddress = ipAddress,
+                Game = game,
+                GameSession = null,
+                PlayerNum = 0,
+                Status = SessionPlayerStatus.Waiting,
+                StatusChanged = DateTime.Now
+            };
+            _WaitingPlayers.Add(result);
+            return result;
         }
 
     }

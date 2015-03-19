@@ -33,6 +33,10 @@ namespace SmallBasicChallenges
         /// </summary>
         public String Game { get; set; }
         /// <summary>
+        /// Current Game Session ID
+        /// </summary>
+        public String GameSession { get; set; }
+        /// <summary>
         /// Number of the player
         /// </summary>
         public int PlayerNum { get; set; }
