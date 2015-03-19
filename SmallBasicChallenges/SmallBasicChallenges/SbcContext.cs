@@ -68,8 +68,18 @@ namespace SmallBasicChallenges
                     session.Status = GameSessionStatus.Connected;
                     session.StatusChanged = DateTime.Now;
                 }
+                // If the game is always 'connecting' after timeout
+                if (session.Status == GameSessionStatus.Connecting && session.StatusChanged.AddSeconds(5) < DateTime.Now)
+                {
+                    // Abort the session and the player sessions
+                    DataService.AbortSession(session);
+                    player = null;
+                    session = null;
+                    opponentPlayer = null;
+                }
                 // Return the session
-                return session;
+                if (session != null)
+                    return session;
             }
 
             // Search an opponent in the waiting list
