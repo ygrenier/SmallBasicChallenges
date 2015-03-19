@@ -48,6 +48,13 @@ namespace SmallBasicChallenges
         /// <param name="ipAddress">The IP Address for security</param>
         /// <returns>The new session player</returns>
         SessionPlayer RegisterInWaitingList(string game, string playerID, string playerName, string ipAddress);
+
+        /// <summary>
+        /// Abort a session
+        /// </summary>
+        /// <param name="session">Game session to abort</param>
+        void AbortSession(GameSession session);
+
     }
 
 }

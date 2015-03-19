@@ -110,6 +110,18 @@ namespace SmallBasicChallenges
             return result;
         }
 
+        /// <summary>
+        /// Abort a session
+        /// </summary>
+        /// <param name="session">Game session to abort</param>
+        public void AbortSession(GameSession session)
+        {
+            if (session == null) throw new ArgumentNullException("session");
+            _GameSessions.Remove(session.SessionID);
+            _ActivePlayerSessions.Remove(session.Player1);
+            _ActivePlayerSessions.Remove(session.Player2);
+        }
+
     }
 
 }

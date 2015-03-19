@@ -103,12 +103,17 @@ namespace SmallBasicChallenges
                     IpAddress = ipAddress,
                     Game = game,
                     PlayerNum = 2,
-                    Status = SessionPlayerStatus.Waiting,
+                    Status = SessionPlayerStatus.Connecting,
                     StatusChanged = DateTime.Now
                 };
 
                 // Create a new session game
-                return DataService.CreateGameSession(game, opponent, player);
+                var session = DataService.CreateGameSession(game, opponent, player);
+                session.Player1.GameSession = session.SessionID;
+                session.Player1.PlayerNum = 1;
+                session.Player2.GameSession = session.SessionID;
+                session.Player2.PlayerNum = 2;
+                return session;
             }
 
             // Register the player in the wainting list
