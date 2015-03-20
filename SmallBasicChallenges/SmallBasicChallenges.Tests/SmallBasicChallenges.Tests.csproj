@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameSessionTest.cs" />
+    <Compile Include="MemoryDataServiceTest.cs" />
     <Compile Include="SbcContextTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
