@@ -17,10 +17,10 @@ namespace SmallBasicChallenges
         /// </summary>
         public SessionPlayer GetPlayerFromID(String id)
         {
-            if (String.IsNullOrWhiteSpace(id) || Player1 == null || Player2 == null) return null;
-            if (String.Equals(id, Player1.PlayerID, StringComparison.OrdinalIgnoreCase))
+            if (String.IsNullOrWhiteSpace(id)) return null;
+            if (Player1 != null && String.Equals(id, Player1.PlayerID, StringComparison.OrdinalIgnoreCase))
                 return Player1;
-            if (String.Equals(id, Player2.PlayerID, StringComparison.OrdinalIgnoreCase))
+            if (Player2 != null && String.Equals(id, Player2.PlayerID, StringComparison.OrdinalIgnoreCase))
                 return Player2;
             return null;
         }
