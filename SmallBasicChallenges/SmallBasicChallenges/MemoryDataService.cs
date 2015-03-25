@@ -33,6 +33,16 @@ namespace SmallBasicChallenges
         }
 
         /// <summary>
+        /// Remove too old waiting player
+        /// </summary>
+        protected void CleanWaitingList()
+        {
+            // Clean the waiting list
+            while (_WaitingPlayers.Count > 0 && _WaitingPlayers[0].StatusChanged < DateTime.Now.AddSeconds(-1))
+                _WaitingPlayers.RemoveAt(0);
+        }
+
+        /// <summary>
         /// Search a waiting player for start a new session as an opponent with <paramref name="playerID"/>
         /// </summary>
         /// <param name="game">Game type</param>
@@ -40,9 +50,7 @@ namespace SmallBasicChallenges
         /// <returns>A player waiting or null</returns>
         public SessionPlayer GetWaitingPlayer(String game, String playerID)
         {
-            // Clean the waiting list
-            while (_WaitingPlayers.Count > 0 && _WaitingPlayers[0].StatusChanged < DateTime.Now.AddSeconds(-1))
-                _WaitingPlayers.RemoveAt(0);
+            CleanWaitingList();
             // Search a player
             return _WaitingPlayers
                 .FirstOrDefault(p => 
@@ -76,7 +84,7 @@ namespace SmallBasicChallenges
             player1.Game = game;
             player2.GameSession = result.SessionID;
             player2.PlayerNum = 2;
-            player1.Game = game;
+            player2.Game = game;
             if (!_ActivePlayerSessions.Contains(player1))
                 _ActivePlayerSessions.Add(player1);
             if (!_ActivePlayerSessions.Contains(player2))
@@ -120,6 +128,23 @@ namespace SmallBasicChallenges
             _GameSessions.Remove(session.SessionID);
             _ActivePlayerSessions.Remove(session.Player1);
             _ActivePlayerSessions.Remove(session.Player2);
+        }
+
+        /// <summary>
+        /// Returns the count of game session in play status
+        /// </summary>
+        public int GetActiveSessionsCount()
+        {
+            return _ActivePlayerSessions.Count;
+        }
+
+        /// <summary>
+        /// Returns the count of waiting player
+        /// </summary>
+        public int GetWaitingCount()
+        {
+            CleanWaitingList();
+            return _WaitingPlayers.Count;
         }
 
     }

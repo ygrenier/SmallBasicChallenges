@@ -55,6 +55,15 @@ namespace SmallBasicChallenges
         /// <param name="session">Game session to abort</param>
         void AbortSession(GameSession session);
 
+        /// <summary>
+        /// Returns the count of game session in play status
+        /// </summary>
+        int GetActiveSessionsCount();
+
+        /// <summary>
+        /// Returns the count of waiting player
+        /// </summary>
+        int GetWaitingCount();
     }
 
 }
