@@ -90,7 +90,7 @@ EndSub
 
 ' Call when a player is connected
 Sub PlayerConnected
-  TextWindow.WriteLine("Connected as Player " + game["playernum"]  + " versus " + game["opponent"])
+  TextWindow.WriteLine("Connected as Player #" + game["playernum"]  + " versus " + game["opponent"])
 EndSub
 
 ' Call when a message need to be displayed : message contains the message

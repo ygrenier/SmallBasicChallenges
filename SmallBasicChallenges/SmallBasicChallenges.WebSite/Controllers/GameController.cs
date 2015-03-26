@@ -225,23 +225,24 @@ namespace SmallBasicChallenges.WebSite.Controllers
                 // Create the context
                 var context = new SbcContext(dataService);
 
+                // Get the player id
+                String playerID = context.CalculatePlayerID(player, this.Request.UserHostAddress, game);
+
                 // Try to connect the player
                 var session = context.ConnectPlayer(player, this.Request.UserHostAddress, game);
-                // If we get a session we returns if status
+                
+                // If we get a session we returns his status
                 if (session != null)
                 {
-                    var player1 = session.GetPlayerFromID(player);
+                    var player1 = session.GetPlayerFromID(playerID);
                     var player2 = session.GetOpponent(player1);
                     return GameResult(new {
                         token = player1.PlayerToken,
                         playernum = player1.PlayerNum,
                         opponent = player2.PlayerName,
-                        result = session.Status
+                        result = session.Status.ToString().ToLower()
                     });
                 }
-
-                // Encode the playerId : Name + gametype + IP
-                String playerID = String.Format("{0}-{1}-{2}", CleanPlayerName(player), game, this.Request.UserHostAddress);
 
                 // Player is in a game ?
                 var gameInfo = FindGame(game, playerID);

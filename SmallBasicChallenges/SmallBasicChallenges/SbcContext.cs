@@ -39,12 +39,21 @@ namespace SmallBasicChallenges
         }
 
         /// <summary>
+        /// Calculate the player ID
+        /// </summary>
+        public virtual String CalculatePlayerID(String playerName, String ipAddress, String game)
+        {
+            // Calculate the player ID : Name + gametype + IP
+            return String.Format("{0}-{1}-{2}", CleanPlayerName(playerName), game, ipAddress);
+        }
+
+        /// <summary>
         /// Try to connect the player to a session
         /// </summary>
         public virtual GameSession ConnectPlayer(String playerName, String ipAddress, String game)
         {
             // Calculate the player ID : Name + gametype + IP
-            String playerID = String.Format("{0}-{1}-{2}", CleanPlayerName(playerName), game, ipAddress);
+            String playerID = CalculatePlayerID(playerName, ipAddress, game);
 
             // Search an active session for the player
             var player = DataService.FindActiveSessionPlayerByPlayerID(playerID);
