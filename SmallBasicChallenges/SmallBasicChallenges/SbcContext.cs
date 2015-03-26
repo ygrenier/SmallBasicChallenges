@@ -56,7 +56,7 @@ namespace SmallBasicChallenges
             String playerID = CalculatePlayerID(playerName, ipAddress, game);
 
             // Search an active session for the player
-            var player = DataService.FindActiveSessionPlayerByPlayerID(playerID);
+            var player = DataService.FindActiveSessionPlayer(playerID);
 
             // If we have a player, get the session game
             if (player != null && player.PlayerToken != null)
@@ -133,9 +133,21 @@ namespace SmallBasicChallenges
         }
 
         /// <summary>
+        /// Find a game session from a player id or token
+        /// </summary>
+        public GameSession FindSessionFromPlayer(string idOrToken)
+        {
+            var player = DataService.FindActiveSessionPlayer(idOrToken);
+            if (player != null)
+                return DataService.GetGameSessionFromPlayer(player);
+            return null;
+        }
+
+        /// <summary>
         /// Current dataservice
         /// </summary>
         public IDataService DataService { get; private set; }
+
     }
 
 }

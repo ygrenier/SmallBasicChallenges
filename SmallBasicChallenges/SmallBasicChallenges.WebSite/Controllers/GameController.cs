@@ -304,7 +304,21 @@ namespace SmallBasicChallenges.WebSite.Controllers
         {
             try
             {
-                // Find the player
+                // Create the context
+                var context = new SbcContext(dataService);
+
+                // Find the game session
+                var session = context.FindSessionFromPlayer(token);
+                if (session == null)
+                    throw new InvalidOperationException("Unknown token.");
+
+                // If the game is finished we don't continue
+                if(session.Status==GameSessionStatus.Finished||session.Status==GameSessionStatus.Aborted)
+                    return GameResult(new { 
+                        status = session.Status.ToString().ToLower(),
+                        result = session.Status.ToString().ToLower()
+                    });
+
                 var player = GetPlayer(token);
                 // Get the game
                 var game = _Games[player.GameID];

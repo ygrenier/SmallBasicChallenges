@@ -17,11 +17,14 @@ namespace SmallBasicChallenges
         Dictionary<String, GameSession> _GameSessions = new Dictionary<String, GameSession>();
 
         /// <summary>
-        /// Find an active player session by the player ID
+        /// Find an active player session by the player ID or the token
         /// </summary>
-        public SessionPlayer FindActiveSessionPlayerByPlayerID(string playerID)
+        public SessionPlayer FindActiveSessionPlayer(String idOrToken)
         {
-            return _ActivePlayerSessions.Where(sp => String.Equals(playerID, sp.PlayerID, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            return _ActivePlayerSessions.Where(sp =>
+                String.Equals(idOrToken, sp.PlayerID, StringComparison.OrdinalIgnoreCase)
+                || String.Equals(idOrToken, sp.PlayerToken, StringComparison.OrdinalIgnoreCase)
+                ).FirstOrDefault();
         }
 
         /// <summary>

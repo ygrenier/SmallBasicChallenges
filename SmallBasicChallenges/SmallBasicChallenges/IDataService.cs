@@ -14,9 +14,9 @@ namespace SmallBasicChallenges
     {
 
         /// <summary>
-        /// Find an active player session by the player ID
+        /// Find an active player session by the player ID or the token
         /// </summary>
-        SessionPlayer FindActiveSessionPlayerByPlayerID(string playerID);
+        SessionPlayer FindActiveSessionPlayer(String idOrToken);
 
         /// <summary>
         /// Get the game session of a player

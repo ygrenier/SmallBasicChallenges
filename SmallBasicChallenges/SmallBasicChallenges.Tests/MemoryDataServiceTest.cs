@@ -122,7 +122,7 @@ namespace SmallBasicChallenges.Tests
         {
             var ds = new MemoryDataService();
 
-            Assert.Null(ds.FindActiveSessionPlayerByPlayerID("p1"));
+            Assert.Null(ds.FindActiveSessionPlayer("p1"));
 
             SessionPlayer p1 = new SessionPlayer {
                 PlayerID = "p1",
@@ -158,16 +158,16 @@ namespace SmallBasicChallenges.Tests
             Assert.Equal(2, p2.PlayerNum);
             Assert.Equal(SessionPlayerStatus.Waiting, p1.Status);
 
-            Assert.Same(p1, ds.FindActiveSessionPlayerByPlayerID("p1"));
-            Assert.Same(p2, ds.FindActiveSessionPlayerByPlayerID("p2"));
+            Assert.Same(p1, ds.FindActiveSessionPlayer("p1"));
+            Assert.Same(p2, ds.FindActiveSessionPlayer("p2"));
 
             Assert.Same(session, ds.GetGameSessionFromPlayer(p1));
             Assert.Same(session, ds.GetGameSessionFromPlayer(p2));
 
             ds.AbortSession(session);
 
-            Assert.Null(ds.FindActiveSessionPlayerByPlayerID("p1"));
-            Assert.Null(ds.FindActiveSessionPlayerByPlayerID("p2"));
+            Assert.Null(ds.FindActiveSessionPlayer("p1"));
+            Assert.Null(ds.FindActiveSessionPlayer("p2"));
 
             Assert.Throws<KeyNotFoundException>(() => ds.GetGameSessionFromPlayer(p1));
             Assert.Throws<KeyNotFoundException>(() => ds.GetGameSessionFromPlayer(p2));

@@ -37,7 +37,7 @@ namespace SmallBasicChallenges.Tests
 
             Assert.Null(context.ConnectPlayer(player, ip, game));
 
-            mocDataService.Verify(ds => ds.FindActiveSessionPlayerByPlayerID(playerID), Times.Once());
+            mocDataService.Verify(ds => ds.FindActiveSessionPlayer(playerID), Times.Once());
             mocDataService.Verify(ds => ds.GetWaitingPlayer(game, playerID), Times.Once());
             mocDataService.Verify(ds => ds.RegisterInWaitingList(game, playerID, player, ip), Times.Once());
 
@@ -50,7 +50,7 @@ namespace SmallBasicChallenges.Tests
 
             Assert.Null(context.ConnectPlayer(player, ip, game));
 
-            mocDataService.Verify(ds => ds.FindActiveSessionPlayerByPlayerID(playerID), Times.Once());
+            mocDataService.Verify(ds => ds.FindActiveSessionPlayer(playerID), Times.Once());
             mocDataService.Verify(ds => ds.GetWaitingPlayer(game, playerID), Times.Once());
             mocDataService.Verify(ds => ds.RegisterInWaitingList(game, playerID, player, ip), Times.Once());
 
@@ -116,7 +116,7 @@ namespace SmallBasicChallenges.Tests
 
             var mocDataService = new Mock<IDataService>();
             // Simulate the player session actives
-            mocDataService.Setup(ds => ds.FindActiveSessionPlayerByPlayerID(It.IsAny<String>()))
+            mocDataService.Setup(ds => ds.FindActiveSessionPlayer(It.IsAny<String>()))
                 .Returns<String>(id => {
                     if (ps1 != null && ps1.PlayerID == id) return ps1;
                     if (ps2 != null && ps2.PlayerID == id) return ps2;
@@ -248,7 +248,7 @@ namespace SmallBasicChallenges.Tests
 
             var mocDataService = new Mock<IDataService>();
             // Simulate the player session actives
-            mocDataService.Setup(ds => ds.FindActiveSessionPlayerByPlayerID(It.IsAny<String>()))
+            mocDataService.Setup(ds => ds.FindActiveSessionPlayer(It.IsAny<String>()))
                 .Returns<String>(id => {
                     if (ps1 != null && ps1.PlayerID == id) return ps1;
                     if (ps2 != null && ps2.PlayerID == id) return ps2;
@@ -269,6 +269,81 @@ namespace SmallBasicChallenges.Tests
 
         }
 
+        [Fact]
+        public void TestConnect_FindSessionFromPlayer()
+        {
+            var player1 = "Player 1";
+            var player2 = "Player 2";
+            var player3 = "Player 3";
+            var ip = "127.0.0.1";
+            var game = "game";
+            var playerID1 = String.Format("{0}-{1}-{2}", "player1", game, ip);
+            var playerID2 = String.Format("{0}-{1}-{2}", "player2", game, ip);
+            var playerID3 = String.Format("{0}-{1}-{2}", "player3", game, ip);
+
+            SessionPlayer ps1 = new SessionPlayer() {
+                Game = game,
+                GameSession = "SESSION",
+                PlayerToken = "PT1",
+                PlayerID = playerID1,
+                PlayerName = player1,
+                IpAddress = ip,
+                Status = SessionPlayerStatus.Connecting,
+                StatusChanged = DateTime.Now
+            };
+            SessionPlayer ps2 = new SessionPlayer() {
+                Game = game,
+                GameSession = "SESSION",
+                PlayerToken = "PT2",
+                PlayerID = playerID2,
+                PlayerName = player2,
+                IpAddress = ip,
+                Status = SessionPlayerStatus.Connecting,
+                StatusChanged = DateTime.Now
+            };
+            SessionPlayer ps3 = new SessionPlayer() {
+                Game = game,
+                GameSession = "SESSION2",
+                PlayerToken = "PT2",
+                PlayerID = playerID3,
+                PlayerName = player3,
+                IpAddress = ip,
+                Status = SessionPlayerStatus.Connecting,
+                StatusChanged = DateTime.Now
+            };
+            GameSession gs = new GameSession {
+                Game = game,
+                Player1 = ps1,
+                Player2 = ps2,
+                SessionID = "SESSION",
+                Status = GameSessionStatus.Connecting,
+                StatusChanged = DateTime.Now.AddSeconds(-6)
+            };
+
+            var mocDataService = new Mock<IDataService>();
+            // Simulate the player session actives
+            mocDataService.Setup(ds => ds.FindActiveSessionPlayer(It.IsAny<String>()))
+                .Returns<String>(id => {
+                    if (ps1 != null && ps1.PlayerID == id) return ps1;
+                    if (ps2 != null && ps2.PlayerID == id) return ps2;
+                    if (ps3 != null && ps3.PlayerID == id) return ps3;
+                    return null;
+                });
+            mocDataService.Setup(ds => ds.GetGameSessionFromPlayer(It.IsAny<SessionPlayer>()))
+                .Returns<SessionPlayer>(p => {
+                    if (gs.Player1 == p || gs.Player2 == p)
+                        return gs;
+                    return null;
+                });
+            var dataService = mocDataService.Object;
+            var context = new SbcContext(dataService);
+
+            Assert.Same(gs, context.FindSessionFromPlayer(playerID1));
+            Assert.Same(gs, context.FindSessionFromPlayer(playerID2));
+            Assert.Null(context.FindSessionFromPlayer(playerID3));
+            Assert.Null(context.FindSessionFromPlayer("XXX"));
+
+        }
 
     }
 }
