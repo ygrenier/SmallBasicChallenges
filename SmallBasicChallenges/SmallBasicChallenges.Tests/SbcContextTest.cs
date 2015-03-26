@@ -30,7 +30,7 @@ namespace SmallBasicChallenges.Tests
 
             var player = "Player 1";
             var ip = "127.0.0.1";
-            var game = "game";
+            var game = "test";
 
             // The ID calculated by the context
             var playerID = String.Format("{0}-{1}-{2}", "player1", game, ip);
@@ -45,7 +45,7 @@ namespace SmallBasicChallenges.Tests
             // Same test with a player null
             player = null;
             ip = "127.0.0.1";
-            game = "game";
+            game = "test";
             playerID = String.Format("{0}-{1}-{2}", "", game, ip);
 
             Assert.Null(context.ConnectPlayer(player, ip, game));
@@ -54,6 +54,8 @@ namespace SmallBasicChallenges.Tests
             mocDataService.Verify(ds => ds.GetWaitingPlayer(game, playerID), Times.Once());
             mocDataService.Verify(ds => ds.RegisterInWaitingList(game, playerID, player, ip), Times.Once());
 
+            var ex = Assert.Throws<ArgumentException>(() => context.ConnectPlayer(player, ip, "unknownGame"));
+            Assert.Equal("Unknown game : unknownGame", ex.Message);
         }
 
         [Fact]
@@ -62,7 +64,7 @@ namespace SmallBasicChallenges.Tests
             var player1 = "Player 1";
             var player2 = "Player 2";
             var ip = "127.0.0.1";
-            var game = "game";
+            var game = "test";
             var playerID1 = String.Format("{0}-{1}-{2}", "player1", game, ip);
             var playerID2 = String.Format("{0}-{1}-{2}", "player2", game, ip);
 
@@ -107,7 +109,7 @@ namespace SmallBasicChallenges.Tests
             var player1 = "Player 1";
             var player2 = "Player 2";
             var ip = "127.0.0.1";
-            var game = "game";
+            var game = "test";
             var playerID1 = String.Format("{0}-{1}-{2}", "player1", game, ip);
             var playerID2 = String.Format("{0}-{1}-{2}", "player2", game, ip);
 
@@ -213,7 +215,7 @@ namespace SmallBasicChallenges.Tests
             var player1 = "Player 1";
             var player2 = "Player 2";
             var ip = "127.0.0.1";
-            var game = "game";
+            var game = "test";
             var playerID1 = String.Format("{0}-{1}-{2}", "player1", game, ip);
             var playerID2 = String.Format("{0}-{1}-{2}", "player2", game, ip);
 
@@ -276,7 +278,7 @@ namespace SmallBasicChallenges.Tests
             var player2 = "Player 2";
             var player3 = "Player 3";
             var ip = "127.0.0.1";
-            var game = "game";
+            var game = "test";
             var playerID1 = String.Format("{0}-{1}-{2}", "player1", game, ip);
             var playerID2 = String.Format("{0}-{1}-{2}", "player2", game, ip);
             var playerID3 = String.Format("{0}-{1}-{2}", "player3", game, ip);

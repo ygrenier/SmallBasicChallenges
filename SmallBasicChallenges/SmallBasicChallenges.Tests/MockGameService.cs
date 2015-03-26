@@ -8,6 +8,11 @@ namespace SmallBasicChallenges.Tests
 {
     public class MockGameService : GameEngine
     {
+
+        public override void InitializeSession(GameSession session)
+        {
+        }
+
         public override IEnumerable<string> GetNames()
         {
             return new String[] { "Test1", "Test2" };

@@ -53,6 +53,11 @@ namespace SmallBasicChallenges
         /// </summary>
         public virtual GameSession ConnectPlayer(String playerName, String ipAddress, String game)
         {
+            // Search the game engine
+            var gEngine = GameService.FindGame(game);
+            if (gEngine == null)
+                throw new ArgumentException(String.Format("Unknown game : {0}", game));
+
             // Calculate the player ID : Name + gametype + IP
             String playerID = CalculatePlayerID(playerName, ipAddress, game);
 
@@ -75,6 +80,7 @@ namespace SmallBasicChallenges
                 // If the two players are connected the game is ready to start
                 if (player.Status == SessionPlayerStatus.Connected && opponentPlayer.Status == SessionPlayerStatus.Connected)
                 {
+                    gEngine.InitializeSession(session);
                     session.Status = GameSessionStatus.Connected;
                     session.StatusChanged = DateTime.Now;
                 }

@@ -14,6 +14,11 @@ namespace SmallBasicChallenges
     {
 
         /// <summary>
+        /// Called when a new game session starting
+        /// </summary>
+        public abstract void InitializeSession(GameSession session);
+
+        /// <summary>
         /// List all names of the engine
         /// </summary>
         public abstract IEnumerable<String> GetNames();
