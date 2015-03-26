@@ -8,7 +8,7 @@ namespace SmallBasicChallenges
 {
 
     /// <summary>
-    /// Service proving data
+    /// Service providing data
     /// </summary>
     public interface IDataService
     {

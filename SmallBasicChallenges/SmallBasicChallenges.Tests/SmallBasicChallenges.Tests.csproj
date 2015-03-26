@@ -45,8 +45,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultGameServiceTest.cs" />
     <Compile Include="GameSessionTest.cs" />
     <Compile Include="MemoryDataServiceTest.cs" />
+    <Compile Include="MockGameService.cs" />
     <Compile Include="SbcContextTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

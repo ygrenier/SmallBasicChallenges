@@ -16,10 +16,11 @@ namespace SmallBasicChallenges
         /// <summary>
         /// Create a new context
         /// </summary>
-        public SbcContext(IDataService dataService)
+        public SbcContext(IDataService dataService, IGameService gameService = null)
         {
             if (dataService == null) throw new ArgumentNullException("dataService");
             this.DataService = dataService;
+            this.GameService = gameService ?? DefaultGameService.Current;
         }
 
         /// <summary>
@@ -144,9 +145,14 @@ namespace SmallBasicChallenges
         }
 
         /// <summary>
-        /// Current dataservice
+        /// Current data service
         /// </summary>
         public IDataService DataService { get; private set; }
+
+        /// <summary>
+        /// Current game service
+        /// </summary>
+        public IGameService GameService { get; private set; }
 
     }
 
