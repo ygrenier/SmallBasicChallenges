@@ -207,6 +207,11 @@ namespace SmallBasicChallenges.Tests
             Assert.Equal(SessionPlayerStatus.Connected, ps1.Status);
             Assert.Equal(SessionPlayerStatus.Connected, ps2.Status);
             Assert.Equal(GameSessionStatus.Connected, gs.Status);
+
+            // Verify 'Save' calls
+            mocDataService.Verify(ds => ds.Save(ps1), Times.Exactly(2));
+            mocDataService.Verify(ds => ds.Save(ps2), Times.Exactly(2));
+            mocDataService.Verify(ds => ds.Save(gs), Times.Exactly(2));
         }
 
         [Fact]

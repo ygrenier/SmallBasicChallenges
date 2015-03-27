@@ -56,6 +56,16 @@ namespace SmallBasicChallenges
         void AbortSession(GameSession session);
 
         /// <summary>
+        /// Save a player session
+        /// </summary>
+        void Save(SessionPlayer player);
+
+        /// <summary>
+        /// Save a game session
+        /// </summary>
+        void Save(GameSession game);
+
+        /// <summary>
         /// Returns the count of game session in play status
         /// </summary>
         int GetActiveSessionsCount();

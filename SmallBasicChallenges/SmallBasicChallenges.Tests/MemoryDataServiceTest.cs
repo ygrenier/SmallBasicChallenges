@@ -176,5 +176,32 @@ namespace SmallBasicChallenges.Tests
 
         }
 
+        [Fact]
+        public void TestSave()
+        {
+            // For coverage only, because these methods do nothing
+
+            var ds = new MemoryDataService();
+
+            Assert.Null(ds.FindActiveSessionPlayer("p1"));
+
+            SessionPlayer p1 = new SessionPlayer {
+                PlayerID = "p1",
+                PlayerName = "Player 1",
+                IpAddress = "127.0.0.1"
+            };
+            SessionPlayer p2 = new SessionPlayer {
+                PlayerID = "p2",
+                PlayerName = "Player 2",
+                IpAddress = "127.0.0.1"
+            };
+
+            var session = ds.CreateGameSession("game", p1, p2);
+
+            ds.Save(p1);
+            ds.Save(p2);
+            ds.Save(session);
+
+        }
     }
 }

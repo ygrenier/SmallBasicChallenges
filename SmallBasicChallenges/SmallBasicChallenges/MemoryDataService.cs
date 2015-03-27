@@ -134,6 +134,22 @@ namespace SmallBasicChallenges
         }
 
         /// <summary>
+        /// Save a player session
+        /// </summary>
+        public void Save(SessionPlayer player)
+        {
+            // All is in memory so nothing todo
+        }
+
+        /// <summary>
+        /// Save a game session
+        /// </summary>
+        public void Save(GameSession game)
+        {
+            // All is in memory so nothing todo
+        }
+
+        /// <summary>
         /// Returns the count of game session in play status
         /// </summary>
         public int GetActiveSessionsCount()

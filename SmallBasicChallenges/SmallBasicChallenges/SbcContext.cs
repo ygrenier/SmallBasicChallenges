@@ -76,6 +76,7 @@ namespace SmallBasicChallenges
                 {
                     player.Status = SessionPlayerStatus.Connected;
                     player.StatusChanged = DateTime.Now;
+                    DataService.Save(player);
                 }
                 // If the two players are connected the game is ready to start
                 if (player.Status == SessionPlayerStatus.Connected && opponentPlayer.Status == SessionPlayerStatus.Connected)
@@ -83,6 +84,7 @@ namespace SmallBasicChallenges
                     gEngine.InitializeSession(session);
                     session.Status = GameSessionStatus.Connected;
                     session.StatusChanged = DateTime.Now;
+                    DataService.Save(session);
                 }
                 // If the game is always 'connecting' after timeout
                 if (session.Status == GameSessionStatus.Connecting && session.StatusChanged.AddSeconds(5) < DateTime.Now)
@@ -129,6 +131,8 @@ namespace SmallBasicChallenges
                 session.Player1.PlayerNum = 1;
                 session.Player2.GameSession = session.SessionID;
                 session.Player2.PlayerNum = 2;
+                DataService.Save(session.Player1);
+                DataService.Save(session.Player2);
                 return session;
             }
 
