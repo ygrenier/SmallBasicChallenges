@@ -234,18 +234,22 @@ namespace SmallBasicChallenges.WebSite.Controllers
                 // If we get a session we returns his status
                 if (session != null)
                 {
-                    var player1 = session.GetPlayerFromID(playerID);
+                    // If the game is not connected, we returns only the status
+                    if (session.Status == GameSessionStatus.Connecting)
+                        return GameResult(new { status = session.Status.ToString().ToLower() });
+                    // Get some datas
+                    var player1 = session.GetPlayer(playerID);
                     var player2 = session.GetOpponent(player1);
                     return GameResult(new {
                         token = player1.PlayerToken,
                         playernum = player1.PlayerNum,
                         opponent = player2.PlayerName,
-                        result = session.Status.ToString().ToLower()
+                        status = session.Status.ToString().ToLower()
                     });
                 }
 
                 // So waiting
-                return GameResult(new { result = "waiting" });
+                return GameResult(new { status = "waiting" });
 
                 //// Player is in a game ?
                 //var gameInfo = FindGame(game, playerID);
@@ -314,6 +318,9 @@ namespace SmallBasicChallenges.WebSite.Controllers
                 var session = context.FindSessionFromPlayer(token);
                 if (session == null)
                     throw new InvalidOperationException("Unknown token.");
+                
+                // Get the player
+                var player = session.GetPlayer(token);
 
                 // If the game is finished we don't continue
                 if(session.Status==GameSessionStatus.Finished||session.Status==GameSessionStatus.Aborted)

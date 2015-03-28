@@ -21,43 +21,57 @@ namespace SmallBasicChallenges.Tests
         }
 
         [Fact]
-        public void TestGetPlayerFromID()
+        public void TestGetPlayer()
         {
             var gs = new GameSession();
 
-            Assert.Null(gs.GetPlayerFromID("P1"));
-            Assert.Null(gs.GetPlayerFromID("P2"));
-            Assert.Null(gs.GetPlayerFromID("P3"));
-            Assert.Null(gs.GetPlayerFromID(null));
+            Assert.Null(gs.GetPlayer("P1"));
+            Assert.Null(gs.GetPlayer("P2"));
+            Assert.Null(gs.GetPlayer("P3"));
+            Assert.Null(gs.GetPlayer("T1"));
+            Assert.Null(gs.GetPlayer("T2"));
+            Assert.Null(gs.GetPlayer("T3"));
+            Assert.Null(gs.GetPlayer(null));
 
             var p1 = new SessionPlayer {
                 PlayerID = "p1",
-                PlayerName = "Player 1"
+                PlayerName = "Player 1",
+                PlayerToken = "t1"
             };
             gs.Player1 = p1;
 
-            Assert.Same(p1, gs.GetPlayerFromID("P1"));
-            Assert.Null(gs.GetPlayerFromID("P2"));
-            Assert.Null(gs.GetPlayerFromID("P3"));
-            Assert.Null(gs.GetPlayerFromID(null));
+            Assert.Same(p1, gs.GetPlayer("P1"));
+            Assert.Null(gs.GetPlayer("P2"));
+            Assert.Null(gs.GetPlayer("P3"));
+            Assert.Same(p1, gs.GetPlayer("T1"));
+            Assert.Null(gs.GetPlayer("T2"));
+            Assert.Null(gs.GetPlayer("T3"));
+            Assert.Null(gs.GetPlayer(null));
 
             var p2 = new SessionPlayer {
                 PlayerID = "p2",
-                PlayerName = "Player 2"
+                PlayerName = "Player 2",
+                PlayerToken = "t2"
             };
             gs.Player2 = p2;
 
-            Assert.Same(p1, gs.GetPlayerFromID("P1"));
-            Assert.Same(p2, gs.GetPlayerFromID("P2"));
-            Assert.Null(gs.GetPlayerFromID("P3"));
-            Assert.Null(gs.GetPlayerFromID(null));
+            Assert.Same(p1, gs.GetPlayer("P1"));
+            Assert.Same(p2, gs.GetPlayer("P2"));
+            Assert.Null(gs.GetPlayer("P3"));
+            Assert.Same(p1, gs.GetPlayer("T1"));
+            Assert.Same(p2, gs.GetPlayer("T2"));
+            Assert.Null(gs.GetPlayer("T3"));
+            Assert.Null(gs.GetPlayer(null));
 
             gs.Player1 = null;
 
-            Assert.Null(gs.GetPlayerFromID("P1"));
-            Assert.Same(p2, gs.GetPlayerFromID("P2"));
-            Assert.Null(gs.GetPlayerFromID("P3"));
-            Assert.Null(gs.GetPlayerFromID(null));
+            Assert.Null(gs.GetPlayer("P1"));
+            Assert.Same(p2, gs.GetPlayer("P2"));
+            Assert.Null(gs.GetPlayer("P3"));
+            Assert.Null(gs.GetPlayer("T1"));
+            Assert.Same(p2, gs.GetPlayer("T2"));
+            Assert.Null(gs.GetPlayer("T3"));
+            Assert.Null(gs.GetPlayer(null));
         }
 
         [Fact]

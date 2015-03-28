@@ -13,14 +13,14 @@ namespace SmallBasicChallenges
     public class GameSession
     {
         /// <summary>
-        /// Find a player from the id
+        /// Find a player from the id or the token
         /// </summary>
-        public SessionPlayer GetPlayerFromID(String id)
+        public SessionPlayer GetPlayer(String idOrToken)
         {
-            if (String.IsNullOrWhiteSpace(id)) return null;
-            if (Player1 != null && String.Equals(id, Player1.PlayerID, StringComparison.OrdinalIgnoreCase))
+            if (String.IsNullOrWhiteSpace(idOrToken)) return null;
+            if (Player1 != null && (String.Equals(idOrToken, Player1.PlayerID, StringComparison.OrdinalIgnoreCase) || String.Equals(idOrToken, Player1.PlayerToken, StringComparison.OrdinalIgnoreCase)))
                 return Player1;
-            if (Player2 != null && String.Equals(id, Player2.PlayerID, StringComparison.OrdinalIgnoreCase))
+            if (Player2 != null && (String.Equals(idOrToken, Player2.PlayerID, StringComparison.OrdinalIgnoreCase)|| String.Equals(idOrToken, Player2.PlayerToken, StringComparison.OrdinalIgnoreCase)))
                 return Player2;
             return null;
         }
