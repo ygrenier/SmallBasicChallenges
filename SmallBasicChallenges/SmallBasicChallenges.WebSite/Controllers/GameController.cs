@@ -238,12 +238,12 @@ namespace SmallBasicChallenges.WebSite.Controllers
                     if (session.Status == GameSessionStatus.Connecting)
                         return GameResult(new { status = session.Status.ToString().ToLower() });
                     // Get some datas
-                    var player1 = session.GetPlayer(playerID);
-                    var player2 = session.GetOpponent(player1);
+                    var thisPlayer = session.GetPlayer(playerID);
+                    var opponent = session.GetOpponent(thisPlayer);
                     return GameResult(new {
-                        token = player1.PlayerToken,
-                        playernum = player1.PlayerNum,
-                        opponent = player2.PlayerName,
+                        token = thisPlayer.PlayerToken,
+                        playernum = thisPlayer.PlayerNum,
+                        opponent = opponent.PlayerName,
                         status = session.Status.ToString().ToLower()
                     });
                 }
@@ -321,15 +321,42 @@ namespace SmallBasicChallenges.WebSite.Controllers
                 
                 // Get the player
                 var player = session.GetPlayer(token);
+                if (!String.Equals(player.IpAddress, this.Request.UserHostAddress, StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidOperationException("Your are not authorized.");
+                var opponent = session.GetOpponent(player);
+                var data = context.DataService.GetGameData(session.SessionID);
 
-                // If the game is finished we don't continue
-                if(session.Status==GameSessionStatus.Finished||session.Status==GameSessionStatus.Aborted)
-                    return GameResult(new { 
-                        status = session.Status.ToString().ToLower(),
-                        result = session.Status.ToString().ToLower()
-                    });
+                while (true)
+                {
+                    // If the game is finished we don't continue
+                    switch (session.Status)
+                    {
+                        case GameSessionStatus.Aborted:
+                        case GameSessionStatus.Connecting:
+                            return GameResult(new { status = session.Status.ToString().ToLower() });
+                        case GameSessionStatus.Finished:
+                            return GameResult(new {
+                                token = player.PlayerToken,
+                                playernum = player.PlayerNum,
+                                opponent = opponent.PlayerName,
+                                status = session.Winner == player.PlayerNum ? "winner" : "looser"
+                            });
+                        case GameSessionStatus.Connected:
+                            return GameResult(new {
+                                token = player.PlayerToken,
+                                playernum = player.PlayerNum,
+                                opponent = opponent.PlayerName,
+                                status = session.Status.ToString().ToLower()
+                            });
+                    }
 
-                throw new NotImplementedException();
+                    // Get the game
+                    GameEngine game = context.GameService.FindGame(session.Game);
+
+                    // Ask the game to build the result
+                    var result = game.BuildStatusResult(context, session, data);
+                    if (result != null) return GameResult(result);
+                }
 
                 //var player = GetPlayer(token);
                 //// Get the game

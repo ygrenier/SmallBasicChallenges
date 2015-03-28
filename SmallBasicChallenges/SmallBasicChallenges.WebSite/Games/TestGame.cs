@@ -25,6 +25,16 @@ namespace SmallBasicChallenges.WebSite.Games
         }
 
         /// <summary>
+        /// Build a status result
+        /// </summary>
+        protected override GameStatusResult InternalBuildStatusResult(SbcContext context, GameSession session, GameData data)
+        {
+            return new GameStatusResult {
+                Status = "playing"
+            };
+        }
+
+        /// <summary>
         /// List of names
         /// </summary>
         public override IEnumerable<string> GetNames()

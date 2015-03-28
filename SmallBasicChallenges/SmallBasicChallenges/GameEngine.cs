@@ -19,6 +19,35 @@ namespace SmallBasicChallenges
         public abstract void InitializeSession(SbcContext context, GameSession session, GameData data);
 
         /// <summary>
+        /// Called to create the build the game status result
+        /// </summary>
+        /// <remarks>
+        /// Return null if the game is finished, the session need to have a winner defined, else the game is aborted
+        /// </remarks>
+        protected abstract GameStatusResult InternalBuildStatusResult(SbcContext context, GameSession session, GameData data);
+
+        /// <summary>
+        /// Build the game status result
+        /// </summary>
+        public GameStatusResult BuildStatusResult(SbcContext context, GameSession session, GameData data)
+        {
+            if (context == null) throw new ArgumentNullException("context");
+            if (session == null) throw new ArgumentNullException("session");
+            if (data == null)
+                data = context.DataService.GetGameData(session.SessionID);
+            var result = InternalBuildStatusResult(context, session, data);
+            if (result == null)
+            {
+                // Check the status to set aborted status if no winner defined
+                if (session.Status == GameSessionStatus.Finished && session.Winner == 0)
+                {
+                    session.Status = GameSessionStatus.Aborted;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// List all names of the engine
         /// </summary>
         public abstract IEnumerable<String> GetNames();

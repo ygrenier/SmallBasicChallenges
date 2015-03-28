@@ -43,6 +43,7 @@
     <Compile Include="GameData.cs" />
     <Compile Include="GameEngine.cs" />
     <Compile Include="GameSession.cs" />
+    <Compile Include="GameStatusResult.cs" />
     <Compile Include="IDataService.cs" />
     <Compile Include="IGameService.cs" />
     <Compile Include="MemoryDataService.cs" />

@@ -70,6 +70,14 @@ namespace SmallBasicChallenges
         /// </summary>
         public DateTime StatusChanged { get; set; }
 
+        /// <summary>
+        /// Number of the player wich wins the game
+        /// </summary>
+        /// <remarks>
+        /// While the game is not finished, contains 0
+        /// </remarks>
+        public int Winner { get; set; }
+
     }
 
     /// <summary>
