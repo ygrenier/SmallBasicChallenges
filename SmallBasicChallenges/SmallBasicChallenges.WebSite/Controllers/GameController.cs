@@ -13,120 +13,120 @@ namespace SmallBasicChallenges.WebSite.Controllers
     [RoutePrefix("Game")]
     public class GameController : Controller
     {
-        #region Nested types
-        class Game
-        {
-            public String GameID { get; set; }
-            public String GameType { get; set; }
-            public String GameStatus { get; set; }
-            public String Player1 { get; set; }
-            public String Player2 { get; set; }
-        }
-        class GamePlayer
-        {
-            public String PlayerToken { get; set; }
-            public String PlayerID { get; set; }
-            public String PlayerName { get; set; }
-            public int PlayerNum { get; set; }
-            public String GameID { get; set; }
-            public String PlayerStatus { get; set; }
-        }
-        class GameTest
-        {
-            public String GameID { get; set; }
-            public int NumberToFind { get; set; }
-            public int TurnCount { get; set; }
-            public int TurnPlayer { get; set; }
-            public int Winner { get; set; }
-        }
-        #endregion
-        #region Game management
-        static Dictionary<String, Game> _Games = new Dictionary<string, Game>();
-        static Dictionary<String, GamePlayer> _Players = new Dictionary<string, GamePlayer>();
-        static List<GamePlayer> _Waiting = new List<GamePlayer>();
-        GamePlayer GetPlayer(String token)
-        {
-            return _Players[token];
-        }
-        Game FindGame(String gameType, String playerId)
-        {
-            var gp = _Players.Values.Where(p => p.PlayerID == playerId).FirstOrDefault();
-            if (gp == null) return null;
-            return _Games.Values.Where(g => g.GameType == gameType && (g.Player1 == gp.PlayerToken || g.Player2 == gp.PlayerToken)).FirstOrDefault();
-        }
-        GamePlayer FindOpponent(String gameType, String playerID)
-        {
-            return _Waiting.Where(w => w.PlayerID != playerID && w.GameID == gameType).FirstOrDefault();
-        }
-        void RegisterPlayerWaiting(string gameType, string playerID, string player)
-        {
-            var gp = _Waiting.Where(w => w.PlayerID == playerID && w.GameID == gameType).FirstOrDefault();
-            if (gp == null)
-            {
-                _Waiting.Add(new GamePlayer {
-                    PlayerID = playerID,
-                    PlayerName = player,
-                    PlayerStatus = "waiting",
-                    GameID = gameType
-                });
-            }
-        }
-        Game CreateNewGame(string game, GamePlayer player1, GamePlayer player2)
-        {
+        //#region Nested types
+        //class Game
+        //{
+        //    public String GameID { get; set; }
+        //    public String GameType { get; set; }
+        //    public String GameStatus { get; set; }
+        //    public String Player1 { get; set; }
+        //    public String Player2 { get; set; }
+        //}
+        //class GamePlayer
+        //{
+        //    public String PlayerToken { get; set; }
+        //    public String PlayerID { get; set; }
+        //    public String PlayerName { get; set; }
+        //    public int PlayerNum { get; set; }
+        //    public String GameID { get; set; }
+        //    public String PlayerStatus { get; set; }
+        //}
+        //class GameTest
+        //{
+        //    public String GameID { get; set; }
+        //    public int NumberToFind { get; set; }
+        //    public int TurnCount { get; set; }
+        //    public int TurnPlayer { get; set; }
+        //    public int Winner { get; set; }
+        //}
+        //#endregion
+        //#region Game management
+        //static Dictionary<String, Game> _Games = new Dictionary<string, Game>();
+        //static Dictionary<String, GamePlayer> _Players = new Dictionary<string, GamePlayer>();
+        //static List<GamePlayer> _Waiting = new List<GamePlayer>();
+        //GamePlayer GetPlayer(String token)
+        //{
+        //    return _Players[token];
+        //}
+        //Game FindGame(String gameType, String playerId)
+        //{
+        //    var gp = _Players.Values.Where(p => p.PlayerID == playerId).FirstOrDefault();
+        //    if (gp == null) return null;
+        //    return _Games.Values.Where(g => g.GameType == gameType && (g.Player1 == gp.PlayerToken || g.Player2 == gp.PlayerToken)).FirstOrDefault();
+        //}
+        //GamePlayer FindOpponent(String gameType, String playerID)
+        //{
+        //    return _Waiting.Where(w => w.PlayerID != playerID && w.GameID == gameType).FirstOrDefault();
+        //}
+        //void RegisterPlayerWaiting(string gameType, string playerID, string player)
+        //{
+        //    var gp = _Waiting.Where(w => w.PlayerID == playerID && w.GameID == gameType).FirstOrDefault();
+        //    if (gp == null)
+        //    {
+        //        _Waiting.Add(new GamePlayer {
+        //            PlayerID = playerID,
+        //            PlayerName = player,
+        //            PlayerStatus = "waiting",
+        //            GameID = gameType
+        //        });
+        //    }
+        //}
+        //Game CreateNewGame(string game, GamePlayer player1, GamePlayer player2)
+        //{
 
-            var result = new Game {
-                GameID = Guid.NewGuid().ToString(),
-                GameStatus = "connecting",
-                GameType = game
-            };
+        //    var result = new Game {
+        //        GameID = Guid.NewGuid().ToString(),
+        //        GameStatus = "connecting",
+        //        GameType = game
+        //    };
 
-            player1.GameID = result.GameID;
-            player1.PlayerToken = Guid.NewGuid().ToString();
-            player1.PlayerNum = 1;
-            player1.PlayerStatus = "connecting";
+        //    player1.GameID = result.GameID;
+        //    player1.PlayerToken = Guid.NewGuid().ToString();
+        //    player1.PlayerNum = 1;
+        //    player1.PlayerStatus = "connecting";
 
-            player2.GameID = result.GameID;
-            player2.PlayerToken = Guid.NewGuid().ToString();
-            player2.PlayerNum = 2;
-            player2.PlayerStatus = "connecting";
+        //    player2.GameID = result.GameID;
+        //    player2.PlayerToken = Guid.NewGuid().ToString();
+        //    player2.PlayerNum = 2;
+        //    player2.PlayerStatus = "connecting";
 
-            result.Player1 = player1.PlayerToken;
-            result.Player2 = player2.PlayerToken;
+        //    result.Player1 = player1.PlayerToken;
+        //    result.Player2 = player2.PlayerToken;
 
-            _Players[player1.PlayerToken] = player1;
-            _Players[player2.PlayerToken] = player2;
-            _Games[result.GameID] = result;
+        //    _Players[player1.PlayerToken] = player1;
+        //    _Players[player2.PlayerToken] = player2;
+        //    _Games[result.GameID] = result;
 
-            return result;
+        //    return result;
 
-        }
-        GamePlayer CreateNewPlayer(string playerID, string player)
-        {
-            return new GamePlayer {
-                PlayerID=playerID,
-                PlayerToken=Guid.NewGuid().ToString(),
-                PlayerName=player
-            };
-        }
-        static Dictionary<String, GameTest> _TestGames = new Dictionary<string, GameTest>();
-        GameTest GetTestGame(string gameId)
-        {
-            GameTest result;
-            if (!_TestGames.TryGetValue(gameId, out result))
-            {
-                var rnd=new Random();
-                result = new GameTest {
-                    GameID = gameId,
-                    NumberToFind = rnd.Next(100) + 1,
-                    TurnCount = 0,
-                    TurnPlayer = 1,
-                    Winner = 0
-                };
-                _TestGames[result.GameID] = result;
-            }
-            return result;
-        }
-        #endregion
+        //}
+        //GamePlayer CreateNewPlayer(string playerID, string player)
+        //{
+        //    return new GamePlayer {
+        //        PlayerID=playerID,
+        //        PlayerToken=Guid.NewGuid().ToString(),
+        //        PlayerName=player
+        //    };
+        //}
+        //static Dictionary<String, GameTest> _TestGames = new Dictionary<string, GameTest>();
+        //GameTest GetTestGame(string gameId)
+        //{
+        //    GameTest result;
+        //    if (!_TestGames.TryGetValue(gameId, out result))
+        //    {
+        //        var rnd=new Random();
+        //        result = new GameTest {
+        //            GameID = gameId,
+        //            NumberToFind = rnd.Next(100) + 1,
+        //            TurnCount = 0,
+        //            TurnPlayer = 1,
+        //            Winner = 0
+        //        };
+        //        _TestGames[result.GameID] = result;
+        //    }
+        //    return result;
+        //}
+        //#endregion
         #region Helpers
         /// <summary>
         /// Escape values
@@ -244,49 +244,52 @@ namespace SmallBasicChallenges.WebSite.Controllers
                     });
                 }
 
-                // Player is in a game ?
-                var gameInfo = FindGame(game, playerID);
-                if (gameInfo != null)
-                {
-                    // Connect the players
-                    var p1 = GetPlayer(gameInfo.Player1);
-                    var p2 = GetPlayer(gameInfo.Player2);
-                    var pInfo = p1.PlayerID == playerID ? p1 : p2;
-                    if (pInfo.PlayerStatus == "connecting")
-                        pInfo.PlayerStatus = "connected";
-                    // If the two players are connected then the game can start
-                    if (p1.PlayerStatus == "connected" && p2.PlayerStatus == "connected")
-                        gameInfo.GameStatus="play";
-                    return GameResult(new { 
-                        token = pInfo.PlayerToken,
-                        playernum = pInfo.PlayerNum,
-                        opponent = pInfo==p1 ? p2.PlayerName : p1.PlayerName,
-                        result = pInfo.PlayerStatus
-                    });
-                }
-
-                // An opponent is available ?
-                var opponent = FindOpponent(game, playerID);
-                if (opponent != null)
-                {
-                    // Create a player
-                    var playerInfo = CreateNewPlayer(playerID, player);
-                    // Create a new game
-                    gameInfo = CreateNewGame(game, playerInfo, opponent);
-                    // While opponent no confirmed where connecting
-                    return GameResult(new { 
-                        token = playerInfo.PlayerToken,
-                        playernum = playerInfo.PlayerNum,
-                        opponent = opponent.PlayerName,
-                        result = playerInfo.PlayerStatus
-                    });
-                }
-
-                // Register the player to be connected as opponent
-                RegisterPlayerWaiting(game, playerID, player);
-
                 // So waiting
                 return GameResult(new { result = "waiting" });
+
+                //// Player is in a game ?
+                //var gameInfo = FindGame(game, playerID);
+                //if (gameInfo != null)
+                //{
+                //    // Connect the players
+                //    var p1 = GetPlayer(gameInfo.Player1);
+                //    var p2 = GetPlayer(gameInfo.Player2);
+                //    var pInfo = p1.PlayerID == playerID ? p1 : p2;
+                //    if (pInfo.PlayerStatus == "connecting")
+                //        pInfo.PlayerStatus = "connected";
+                //    // If the two players are connected then the game can start
+                //    if (p1.PlayerStatus == "connected" && p2.PlayerStatus == "connected")
+                //        gameInfo.GameStatus="play";
+                //    return GameResult(new { 
+                //        token = pInfo.PlayerToken,
+                //        playernum = pInfo.PlayerNum,
+                //        opponent = pInfo==p1 ? p2.PlayerName : p1.PlayerName,
+                //        result = pInfo.PlayerStatus
+                //    });
+                //}
+
+                //// An opponent is available ?
+                //var opponent = FindOpponent(game, playerID);
+                //if (opponent != null)
+                //{
+                //    // Create a player
+                //    var playerInfo = CreateNewPlayer(playerID, player);
+                //    // Create a new game
+                //    gameInfo = CreateNewGame(game, playerInfo, opponent);
+                //    // While opponent no confirmed where connecting
+                //    return GameResult(new { 
+                //        token = playerInfo.PlayerToken,
+                //        playernum = playerInfo.PlayerNum,
+                //        opponent = opponent.PlayerName,
+                //        result = playerInfo.PlayerStatus
+                //    });
+                //}
+
+                //// Register the player to be connected as opponent
+                //RegisterPlayerWaiting(game, playerID, player);
+
+                //// So waiting
+                //return GameResult(new { result = "waiting" });
             }
             catch (Exception ex)
             {
@@ -319,21 +322,23 @@ namespace SmallBasicChallenges.WebSite.Controllers
                         result = session.Status.ToString().ToLower()
                     });
 
-                var player = GetPlayer(token);
-                // Get the game
-                var game = _Games[player.GameID];
-                if (game.GameStatus == "finished" || game.GameStatus == "aborted")
-                    return GameResult(new { status = game.GameStatus, result = game.GameStatus });
+                throw new NotImplementedException();
 
-                // Get test game
-                var testGame = GetTestGame(player.GameID);
+                //var player = GetPlayer(token);
+                //// Get the game
+                //var game = _Games[player.GameID];
+                //if (game.GameStatus == "finished" || game.GameStatus == "aborted")
+                //    return GameResult(new { status = game.GameStatus, result = game.GameStatus });
 
-                return GameResult(new {
-                    status = game.GameStatus,
-                    turn = testGame.TurnCount + 1,
-                    player = testGame.TurnPlayer,
-                    result = "success" 
-                });
+                //// Get test game
+                //var testGame = GetTestGame(player.GameID);
+
+                //return GameResult(new {
+                //    status = game.GameStatus,
+                //    turn = testGame.TurnCount + 1,
+                //    player = testGame.TurnPlayer,
+                //    result = "success" 
+                //});
 
             }
             catch (Exception ex)
@@ -352,55 +357,57 @@ namespace SmallBasicChallenges.WebSite.Controllers
         {
             try
             {
-                // Find the player
-                var player = GetPlayer(token);
-                // Get the game
-                var game = _Games[player.GameID];
-                if (game.GameStatus == "finished" || game.GameStatus == "aborted")
-                    return GameResult(new { status = game.GameStatus, result = game.GameStatus });
+                throw new NotImplementedException();
 
-                // Get test game
-                var testGame = GetTestGame(player.GameID);
+                //// Find the player
+                //var player = GetPlayer(token);
+                //// Get the game
+                //var game = _Games[player.GameID];
+                //if (game.GameStatus == "finished" || game.GameStatus == "aborted")
+                //    return GameResult(new { status = game.GameStatus, result = game.GameStatus });
 
-                // Is this the turn of the player ?
-                if (player.PlayerNum != testGame.TurnPlayer)
-                {
-                    return GameResult(new {
-                        status = game.GameStatus,
-                        turn = testGame.TurnCount + 1,
-                        player = testGame.TurnPlayer,
-                        result = "failed"
-                    });
-                }
+                //// Get test game
+                //var testGame = GetTestGame(player.GameID);
 
-                // Next turn
-                testGame.TurnCount++;
-                testGame.TurnPlayer = testGame.TurnPlayer == 1 ? 2 : 1;
+                //// Is this the turn of the player ?
+                //if (player.PlayerNum != testGame.TurnPlayer)
+                //{
+                //    return GameResult(new {
+                //        status = game.GameStatus,
+                //        turn = testGame.TurnCount + 1,
+                //        player = testGame.TurnPlayer,
+                //        result = "failed"
+                //    });
+                //}
 
-                // Get the num
-                var num = int.Parse(command);
-                var r = num.CompareTo(testGame.NumberToFind);
-                if (r < 0)
-                {
-                    return GameResult(new {
-                        result = "before"
-                    });
-                }
-                else if (r > 0)
-                {
-                    return GameResult(new {
-                        result = "after"
-                    });
-                }
-                else
-                {
-                    // Wins the end the game
-                    testGame.Winner = player.PlayerNum;
-                    game.GameStatus = "finished";
-                    return GameResult(new {
-                        result = "wins"
-                    });
-                }
+                //// Next turn
+                //testGame.TurnCount++;
+                //testGame.TurnPlayer = testGame.TurnPlayer == 1 ? 2 : 1;
+
+                //// Get the num
+                //var num = int.Parse(command);
+                //var r = num.CompareTo(testGame.NumberToFind);
+                //if (r < 0)
+                //{
+                //    return GameResult(new {
+                //        result = "before"
+                //    });
+                //}
+                //else if (r > 0)
+                //{
+                //    return GameResult(new {
+                //        result = "after"
+                //    });
+                //}
+                //else
+                //{
+                //    // Wins the end the game
+                //    testGame.Winner = player.PlayerNum;
+                //    game.GameStatus = "finished";
+                //    return GameResult(new {
+                //        result = "wins"
+                //    });
+                //}
 
             }
             catch (Exception ex)

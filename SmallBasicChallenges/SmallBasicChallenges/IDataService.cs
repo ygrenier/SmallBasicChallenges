@@ -24,6 +24,11 @@ namespace SmallBasicChallenges
         GameSession GetGameSessionFromPlayer(SessionPlayer player);
 
         /// <summary>
+        /// Get the game data for a session
+        /// </summary>
+        GameData GetGameData(String sessionID);
+
+        /// <summary>
         /// Search a waiting player for start a new session as an opponent with <paramref name="playerID"/>
         /// </summary>
         /// <param name="game">Game type</param>
@@ -64,6 +69,11 @@ namespace SmallBasicChallenges
         /// Save a game session
         /// </summary>
         void Save(GameSession game);
+
+        /// <summary>
+        /// Save game data
+        /// </summary>
+        void Save(GameData date);
 
         /// <summary>
         /// Returns the count of game session in play status

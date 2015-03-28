@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultGameService.cs" />
+    <Compile Include="GameData.cs" />
     <Compile Include="GameEngine.cs" />
     <Compile Include="GameSession.cs" />
     <Compile Include="IDataService.cs" />

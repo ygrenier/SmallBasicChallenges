@@ -14,7 +14,8 @@ namespace SmallBasicChallenges
     {
         List<SessionPlayer> _WaitingPlayers = new List<SessionPlayer>();
         List<SessionPlayer> _ActivePlayerSessions = new List<SessionPlayer>();
-        Dictionary<String, GameSession> _GameSessions = new Dictionary<String, GameSession>();
+        Dictionary<String, GameSession> _GameSessions = new Dictionary<String, GameSession>(StringComparer.OrdinalIgnoreCase);
+        Dictionary<String, GameData> _GameDatas = new Dictionary<string, GameData>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Find an active player session by the player ID or the token
@@ -147,6 +148,26 @@ namespace SmallBasicChallenges
         public void Save(GameSession game)
         {
             // All is in memory so nothing todo
+        }
+
+        /// <summary>
+        /// Get the game data for a session
+        /// </summary>
+        public GameData GetGameData(String sessionID)
+        {
+            GameData result;
+            if (!_GameDatas.TryGetValue(sessionID, out result))
+                result = null;
+            return result;
+        }
+
+        /// <summary>
+        /// Save session game data
+        /// </summary>
+        public void Save(GameData data)
+        {
+            if (data == null) throw new ArgumentNullException("data");
+            _GameDatas[data.SessionID] = data;
         }
 
         /// <summary>

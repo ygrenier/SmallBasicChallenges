@@ -79,7 +79,17 @@ namespace SmallBasicChallenges
                 // If the two players are connected the game is ready to start
                 if (player.Status == SessionPlayerStatus.Connected && opponentPlayer.Status == SessionPlayerStatus.Connected)
                 {
-                    gEngine.InitializeSession(this, session);
+                    GameData data = DataService.GetGameData(session.SessionID);
+                    if (data == null)
+                    {
+                        data = new GameData {
+                            SessionID = session.SessionID,
+                            CurrentPlayer = player.PlayerNum,
+                            CurrentTurn = 1
+                        };
+                        gEngine.InitializeSession(this, session, data);
+                        DataService.Save(data);
+                    }
                     SetGameSessionStatus(session, GameSessionStatus.Connected, true);
                 }
                 // If the game is always 'connecting' after timeout
