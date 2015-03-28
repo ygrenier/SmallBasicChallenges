@@ -137,7 +137,7 @@ Sub SbcConnect
       failMessage = "Too much connection tries"
       game["state"] = "failed"
     EndIf
-  ElseIf result["result"] = "failed" Then
+  ElseIf result["status"] = "failed" Then
     message= "Failed to connect : " + result["message"]
     DisplayMessage()
     game["tries"] = game["tries"] +1
@@ -147,12 +147,12 @@ Sub SbcConnect
     EndIf
     ' Pause
     Program.Delay(1000)
-  ElseIf result["result"] = "waiting" Then
+  ElseIf result["status"] = "waiting" Then
     message= "Waiting an opponent"
     DisplayMessage()
     ' Pause
     Program.Delay(500)
-  ElseIf result["result"] = "connected" Then
+  ElseIf result["status"] = "connected" Then
     game["tries"] = 0
     game["token"] = result["token"]
     game["playernum"] = result["playernum"]
@@ -174,7 +174,7 @@ Sub SbcGetGameStatus
       failMessage = "Too much status tries"
       game["state"] = "failed"
     EndIf
-  ElseIf result["result"] = "failed" Then
+  ElseIf result["status"] = "failed" Then
     message= "Failed to get the status : " + result["message"]
     DisplayMessage()
     game["tries"] = game["tries"] +1
@@ -184,7 +184,7 @@ Sub SbcGetGameStatus
     EndIf
     ' Pause
     Program.Delay(500)
-  ElseIf result["result"] = "success" Or result["result"] = "finished" Or result["result"] = "aborted" Then
+  ElseIf result["status"] = "success" Or result["status"] = "finished" Or result["status"] = "aborted" Then
     game["tries"] = 0
     gameStatus = result
   EndIf

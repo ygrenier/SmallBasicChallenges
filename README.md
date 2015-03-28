@@ -48,8 +48,8 @@ When playing, the status depends on the game. Each game provide is result, and s
 
 When the game is finished, we are in this situations :
 - **aborted** : One of the player stop the game or break the communication, so the game his stopped. Some games handle the aborted situation by making the opponent has winner.
-- **wins** : the player asking the action wins the game
-- **looses** : the player asking the action loose the game
+- **winner** : the player asking the action wins the game
+- **looser** : the player asking the action loose the game
 
   
 ### Error handling
@@ -67,6 +67,13 @@ For example :  `http://[GameServerUrl]/connect?game=test&player=My Name`.
 While we don't reach the **connected** status, then we are in the connection phase, and we should call the 'connect' action.
 
 When we are connected, we need to save the **token** result indexed value to the rest of the game.
+
+The informations in the result are :
+- **token** : contains the game session identifier
+- **playernum** : Number of the player in the session (1 or 2)
+- **opponent** : the display name of the opponent
+- **status** : the status
+
 
 ### Playing
 
