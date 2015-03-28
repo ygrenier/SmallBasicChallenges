@@ -211,7 +211,7 @@ namespace SmallBasicChallenges.Tests
             // Verify 'Save' calls
             mocDataService.Verify(ds => ds.Save(ps1), Times.Exactly(2));
             mocDataService.Verify(ds => ds.Save(ps2), Times.Exactly(2));
-            mocDataService.Verify(ds => ds.Save(gs), Times.Exactly(2));
+            mocDataService.Verify(ds => ds.Save(gs), Times.Exactly(1));
         }
 
         [Fact]
@@ -350,6 +350,92 @@ namespace SmallBasicChallenges.Tests
             Assert.Null(context.FindSessionFromPlayer(playerID3));
             Assert.Null(context.FindSessionFromPlayer("XXX"));
 
+        }
+
+        [Fact]
+        public void TestSetPlayerStatus()
+        {
+            var mocDataService = new Mock<IDataService>();
+            var dataService = mocDataService.Object;
+            var context = new SbcContext(dataService);
+
+            var player = new SessionPlayer {
+                Status = SessionPlayerStatus.Connecting,
+                StatusChanged = DateTime.MinValue
+            };
+
+            // Change and saved
+            context.SetPlayerStatus(player, SessionPlayerStatus.Connected, true);
+            Assert.Equal(SessionPlayerStatus.Connected, player.Status);
+            Assert.NotEqual(DateTime.MinValue, player.StatusChanged);
+            mocDataService.Verify(ds => ds.Save(player), Times.Exactly(1));
+
+            // Change but not saved
+            player.Status = SessionPlayerStatus.Connecting;
+            player.StatusChanged = DateTime.MinValue;
+            context.SetPlayerStatus(player, SessionPlayerStatus.Connected, false);
+            Assert.Equal(SessionPlayerStatus.Connected, player.Status);
+            Assert.NotEqual(DateTime.MinValue, player.StatusChanged);
+            mocDataService.Verify(ds => ds.Save(player), Times.Exactly(1));
+
+            // Same status so no change and no save
+            player.StatusChanged = DateTime.MinValue;
+            context.SetPlayerStatus(player, SessionPlayerStatus.Connected, true);
+            Assert.Equal(SessionPlayerStatus.Connected, player.Status);
+            Assert.Equal(DateTime.MinValue, player.StatusChanged);
+            mocDataService.Verify(ds => ds.Save(player), Times.Exactly(1));
+
+            // Same status so no change and no save
+            player.StatusChanged = DateTime.MinValue;
+            context.SetPlayerStatus(player, SessionPlayerStatus.Connected, false);
+            Assert.Equal(SessionPlayerStatus.Connected, player.Status);
+            Assert.Equal(DateTime.MinValue, player.StatusChanged);
+            mocDataService.Verify(ds => ds.Save(player), Times.Exactly(1));
+
+            Assert.Throws<ArgumentNullException>(() => context.SetPlayerStatus(null, SessionPlayerStatus.Playing));
+        }
+
+        [Fact]
+        public void TestSetGameSessionStatus()
+        {
+            var mocDataService = new Mock<IDataService>();
+            var dataService = mocDataService.Object;
+            var context = new SbcContext(dataService);
+
+            var session = new GameSession {
+                Status = GameSessionStatus.Connecting,
+                StatusChanged = DateTime.MinValue
+            };
+
+            // Change and saved
+            context.SetGameSessionStatus(session, GameSessionStatus.Connected, true);
+            Assert.Equal(GameSessionStatus.Connected, session.Status);
+            Assert.NotEqual(DateTime.MinValue, session.StatusChanged);
+            mocDataService.Verify(ds => ds.Save(session), Times.Exactly(1));
+
+            // Change but not saved
+            session.Status = GameSessionStatus.Connecting;
+            session.StatusChanged = DateTime.MinValue;
+            context.SetGameSessionStatus(session, GameSessionStatus.Connected, false);
+            Assert.Equal(GameSessionStatus.Connected, session.Status);
+            Assert.NotEqual(DateTime.MinValue, session.StatusChanged);
+            mocDataService.Verify(ds => ds.Save(session), Times.Exactly(1));
+
+            // Same status so no change and no save
+            session.StatusChanged = DateTime.MinValue;
+            context.SetGameSessionStatus(session, GameSessionStatus.Connected, true);
+            Assert.Equal(GameSessionStatus.Connected, session.Status);
+            Assert.Equal(DateTime.MinValue, session.StatusChanged);
+            mocDataService.Verify(ds => ds.Save(session), Times.Exactly(1));
+
+            // Same status so no change and no save
+            session.StatusChanged = DateTime.MinValue;
+            context.SetGameSessionStatus(session, GameSessionStatus.Connected, false);
+            Assert.Equal(GameSessionStatus.Connected, session.Status);
+            Assert.Equal(DateTime.MinValue, session.StatusChanged);
+            mocDataService.Verify(ds => ds.Save(session), Times.Exactly(1));
+
+            Assert.Throws<ArgumentNullException>(() => context.SetGameSessionStatus(null, GameSessionStatus.Playing));
         }
 
     }

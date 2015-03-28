@@ -74,17 +74,13 @@ namespace SmallBasicChallenges
                 // If the player is connecting, then he become connected
                 if (player.Status == SessionPlayerStatus.Connecting)
                 {
-                    player.Status = SessionPlayerStatus.Connected;
-                    player.StatusChanged = DateTime.Now;
-                    DataService.Save(player);
+                    SetPlayerStatus(player, SessionPlayerStatus.Connected, true);
                 }
                 // If the two players are connected the game is ready to start
                 if (player.Status == SessionPlayerStatus.Connected && opponentPlayer.Status == SessionPlayerStatus.Connected)
                 {
-                    gEngine.InitializeSession(session);
-                    session.Status = GameSessionStatus.Connected;
-                    session.StatusChanged = DateTime.Now;
-                    DataService.Save(session);
+                    gEngine.InitializeSession(this, session);
+                    SetGameSessionStatus(session, GameSessionStatus.Connected, true);
                 }
                 // If the game is always 'connecting' after timeout
                 if (session.Status == GameSessionStatus.Connecting && session.StatusChanged.AddSeconds(5) < DateTime.Now)
@@ -110,8 +106,7 @@ namespace SmallBasicChallenges
                 opponent.PlayerToken = Guid.NewGuid().ToString();
                 opponent.Game=game;
                 opponent.PlayerNum = 1;
-                opponent.Status = opponent.Status == SessionPlayerStatus.Waiting ? SessionPlayerStatus.Connecting : opponent.Status;
-                opponent.StatusChanged = DateTime.Now;
+                SetPlayerStatus(opponent, opponent.Status == SessionPlayerStatus.Waiting ? SessionPlayerStatus.Connecting : opponent.Status, false);
 
                 // Create player
                 player = new SessionPlayer() {
@@ -152,6 +147,36 @@ namespace SmallBasicChallenges
             if (player != null)
                 return DataService.GetGameSessionFromPlayer(player);
             return null;
+        }
+
+        /// <summary>
+        /// Change the player session status
+        /// </summary>
+        public void SetPlayerStatus(SessionPlayer player, SessionPlayerStatus newStatus, bool save = true)
+        {
+            if (player == null) throw new ArgumentNullException("player");
+            if (player.Status != newStatus)
+            {
+                player.Status = newStatus;
+                player.StatusChanged = DateTime.Now;
+                if (save)
+                    DataService.Save(player);
+            }
+        }
+
+        /// <summary>
+        /// Change the game session status
+        /// </summary>
+        public void SetGameSessionStatus(GameSession session, GameSessionStatus newStatus, bool save = true)
+        {
+            if (session == null) throw new ArgumentNullException("session");
+            if (session.Status != newStatus)
+            {
+                session.Status = newStatus;
+                session.StatusChanged = DateTime.Now;
+                if (save)
+                    DataService.Save(session);
+            }
         }
 
         /// <summary>

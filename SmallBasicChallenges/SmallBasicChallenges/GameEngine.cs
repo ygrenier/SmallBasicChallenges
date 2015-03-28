@@ -16,7 +16,7 @@ namespace SmallBasicChallenges
         /// <summary>
         /// Called when a new game session starting
         /// </summary>
-        public abstract void InitializeSession(GameSession session);
+        public abstract void InitializeSession(SbcContext context, GameSession session);
 
         /// <summary>
         /// List all names of the engine

@@ -16,8 +16,9 @@ namespace SmallBasicChallenges.WebSite.Games
         /// <summary>
         /// Called when a new game session starting
         /// </summary>
-        public override void InitializeSession(GameSession session)
+        public override void InitializeSession(SbcContext context, GameSession session)
         {
+
         }
 
         /// <summary>

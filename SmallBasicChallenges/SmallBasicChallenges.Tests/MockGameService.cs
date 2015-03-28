@@ -9,7 +9,7 @@ namespace SmallBasicChallenges.Tests
     public class MockGameService : GameEngine
     {
 
-        public override void InitializeSession(GameSession session)
+        public override void InitializeSession(SbcContext context, GameSession session)
         {
         }
 
