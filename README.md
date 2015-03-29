@@ -81,7 +81,7 @@ While playing, we need to call the the url action `http://[GameServerUrl]/status
 
 `http://[GameServerUrl]/status?token=XXYYZZAA`.
 
-This action returns an array with a **status** indexed value, indicating the game status. If we have **aborted**, **wins** or **looses** then the game is finished. Else we are in a game status depending of the rules of the game.
+This action returns an array with a **status** indexed value, indicating the game status. If we have **aborted**, **winner** or **looser** then the game is finished. Else we are in a game status depending of the rules of the game.
 
 When it's your turn to play, you should call the url action `http://[GameServerUrl]/play?` with the parameters :
 - **token** : containing the token session

@@ -165,6 +165,7 @@ Sub SbcConnect
 EndSub
 Sub SbcGetGameStatus
   result = Network.GetWebPageContents(config["server"] + "/status?token=" + game["token"])
+  TextWindow.WriteLine(currentPlayer + " : " + result)
   ' Failed ?
   If result = "" Then
     message= "Status failed"

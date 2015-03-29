@@ -13,7 +13,7 @@ namespace SmallBasicChallenges.Tests
         {
         }
 
-        protected override GameStatusResult InternalBuildStatusResult(SbcContext context, GameSession session, GameData data)
+        protected override GameStatusResult InternalBuildStatusResult(SbcContext context, GameSession session, GameData data, String forPlayer)
         {
             return null;
         }

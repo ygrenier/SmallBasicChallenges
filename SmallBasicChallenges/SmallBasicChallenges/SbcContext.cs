@@ -79,17 +79,6 @@ namespace SmallBasicChallenges
                 // If the two players are connected the game is ready to start
                 if (player.Status == SessionPlayerStatus.Connected && opponentPlayer.Status == SessionPlayerStatus.Connected)
                 {
-                    GameData data = DataService.GetGameData(session.SessionID);
-                    if (data == null)
-                    {
-                        data = new GameData {
-                            SessionID = session.SessionID,
-                            CurrentPlayer = player.PlayerNum,
-                            CurrentTurn = 1
-                        };
-                        gEngine.InitializeSession(this, session, data);
-                        DataService.Save(data);
-                    }
                     SetGameSessionStatus(session, GameSessionStatus.Connected, true);
                 }
                 // If the game is always 'connecting' after timeout
@@ -187,6 +176,80 @@ namespace SmallBasicChallenges
                 if (save)
                     DataService.Save(session);
             }
+        }
+
+        /// <summary>
+        /// Calculate the current status result
+        /// </summary>
+        public GameStatusResult GetStatusResult(GameSession session, String playerIdOrToken)
+        {
+            if (session == null) throw new ArgumentNullException("session");
+
+            // Check if we require the game
+            if (session.Status >= GameSessionStatus.Playing)
+            {
+                var game = GameService.FindGame(session.Game);
+                var result = game.BuildStatusResult(this, session, DataService.GetGameData(session.SessionID), playerIdOrToken);
+                if (result != null)
+                    return result;
+            }
+
+            // Get the player
+            var thisPlayer = session.GetPlayer(playerIdOrToken);
+
+            // Get the opponent
+            var opponent = session.GetOpponent(thisPlayer);
+
+            // Depending the status session
+            switch (session.Status)
+            {
+                case GameSessionStatus.Connected:
+                case GameSessionStatus.Playing:
+                    return new DefaultStatusResult {
+                        Token = thisPlayer.PlayerToken,
+                        PlayerNum = thisPlayer.PlayerNum,
+                        Opponent = opponent.PlayerName,
+                        Status = session.Status.ToString().ToLower()
+                    };
+                case GameSessionStatus.Finished:
+                    return new DefaultStatusResult {
+                        Token = thisPlayer.PlayerToken,
+                        PlayerNum = thisPlayer.PlayerNum,
+                        Opponent = opponent.PlayerName,
+                        Status = session.Winner == thisPlayer.PlayerNum ? "winner" : "looser"
+                    };
+                case GameSessionStatus.Aborted:
+                    //break;
+                case GameSessionStatus.Connecting:
+                default:
+                    return new GameStatusResult { Status = session.Status.ToString().ToLower() };
+            }
+        }
+
+        /// <summary>
+        /// Get the data game of a session
+        /// </summary>
+        public GameData GetGameData(GameSession session)
+        {
+            if (session == null) throw new ArgumentNullException("session");
+            if (session.Status == GameSessionStatus.Connecting) throw new InvalidOperationException("This session is connecting, no data available.");
+            var gEngine = this.GameService.FindGame(session.Game);
+            GameData data = DataService.GetGameData(session.SessionID);
+            if (data == null)
+            {
+                data = new GameData {
+                    SessionID = session.SessionID,
+                    CurrentPlayer = 1,
+                    CurrentTurn = 1
+                };
+                gEngine.InitializeSession(this, session, data);
+                DataService.Save(data);
+            }
+            if (session.Status == GameSessionStatus.Connected)
+            {
+                SetGameSessionStatus(session, GameSessionStatus.Playing, true);
+            }
+            return data;
         }
 
         /// <summary>

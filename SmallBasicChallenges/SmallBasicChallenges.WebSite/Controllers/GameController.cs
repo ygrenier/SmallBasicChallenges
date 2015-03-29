@@ -234,66 +234,11 @@ namespace SmallBasicChallenges.WebSite.Controllers
                 // If we get a session we returns his status
                 if (session != null)
                 {
-                    // If the game is not connected, we returns only the status
-                    if (session.Status == GameSessionStatus.Connecting)
-                        return GameResult(new { status = session.Status.ToString().ToLower() });
-                    // Get some datas
-                    var thisPlayer = session.GetPlayer(playerID);
-                    var opponent = session.GetOpponent(thisPlayer);
-                    return GameResult(new {
-                        token = thisPlayer.PlayerToken,
-                        playernum = thisPlayer.PlayerNum,
-                        opponent = opponent.PlayerName,
-                        status = session.Status.ToString().ToLower()
-                    });
+                    return GameResult(context.GetStatusResult(session, playerID));
                 }
 
                 // So waiting
                 return GameResult(new { status = "waiting" });
-
-                //// Player is in a game ?
-                //var gameInfo = FindGame(game, playerID);
-                //if (gameInfo != null)
-                //{
-                //    // Connect the players
-                //    var p1 = GetPlayer(gameInfo.Player1);
-                //    var p2 = GetPlayer(gameInfo.Player2);
-                //    var pInfo = p1.PlayerID == playerID ? p1 : p2;
-                //    if (pInfo.PlayerStatus == "connecting")
-                //        pInfo.PlayerStatus = "connected";
-                //    // If the two players are connected then the game can start
-                //    if (p1.PlayerStatus == "connected" && p2.PlayerStatus == "connected")
-                //        gameInfo.GameStatus="play";
-                //    return GameResult(new { 
-                //        token = pInfo.PlayerToken,
-                //        playernum = pInfo.PlayerNum,
-                //        opponent = pInfo==p1 ? p2.PlayerName : p1.PlayerName,
-                //        result = pInfo.PlayerStatus
-                //    });
-                //}
-
-                //// An opponent is available ?
-                //var opponent = FindOpponent(game, playerID);
-                //if (opponent != null)
-                //{
-                //    // Create a player
-                //    var playerInfo = CreateNewPlayer(playerID, player);
-                //    // Create a new game
-                //    gameInfo = CreateNewGame(game, playerInfo, opponent);
-                //    // While opponent no confirmed where connecting
-                //    return GameResult(new { 
-                //        token = playerInfo.PlayerToken,
-                //        playernum = playerInfo.PlayerNum,
-                //        opponent = opponent.PlayerName,
-                //        result = playerInfo.PlayerStatus
-                //    });
-                //}
-
-                //// Register the player to be connected as opponent
-                //RegisterPlayerWaiting(game, playerID, player);
-
-                //// So waiting
-                //return GameResult(new { result = "waiting" });
             }
             catch (Exception ex)
             {
@@ -323,57 +268,12 @@ namespace SmallBasicChallenges.WebSite.Controllers
                 var player = session.GetPlayer(token);
                 if (!String.Equals(player.IpAddress, this.Request.UserHostAddress, StringComparison.OrdinalIgnoreCase))
                     throw new InvalidOperationException("Your are not authorized.");
-                var opponent = session.GetOpponent(player);
-                var data = context.DataService.GetGameData(session.SessionID);
 
-                while (true)
-                {
-                    // If the game is finished we don't continue
-                    switch (session.Status)
-                    {
-                        case GameSessionStatus.Aborted:
-                        case GameSessionStatus.Connecting:
-                            return GameResult(new { status = session.Status.ToString().ToLower() });
-                        case GameSessionStatus.Finished:
-                            return GameResult(new {
-                                token = player.PlayerToken,
-                                playernum = player.PlayerNum,
-                                opponent = opponent.PlayerName,
-                                status = session.Winner == player.PlayerNum ? "winner" : "looser"
-                            });
-                        case GameSessionStatus.Connected:
-                            return GameResult(new {
-                                token = player.PlayerToken,
-                                playernum = player.PlayerNum,
-                                opponent = opponent.PlayerName,
-                                status = session.Status.ToString().ToLower()
-                            });
-                    }
+                // Get the data
+                var data = context.GetGameData(session);
 
-                    // Get the game
-                    GameEngine game = context.GameService.FindGame(session.Game);
-
-                    // Ask the game to build the result
-                    var result = game.BuildStatusResult(context, session, data);
-                    if (result != null) return GameResult(result);
-                }
-
-                //var player = GetPlayer(token);
-                //// Get the game
-                //var game = _Games[player.GameID];
-                //if (game.GameStatus == "finished" || game.GameStatus == "aborted")
-                //    return GameResult(new { status = game.GameStatus, result = game.GameStatus });
-
-                //// Get test game
-                //var testGame = GetTestGame(player.GameID);
-
-                //return GameResult(new {
-                //    status = game.GameStatus,
-                //    turn = testGame.TurnCount + 1,
-                //    player = testGame.TurnPlayer,
-                //    result = "success" 
-                //});
-
+                // Get the result
+                return GameResult(context.GetStatusResult(session, token));
             }
             catch (Exception ex)
             {

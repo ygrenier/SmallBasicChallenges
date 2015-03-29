@@ -24,18 +24,18 @@ namespace SmallBasicChallenges
         /// <remarks>
         /// Return null if the game is finished, the session need to have a winner defined, else the game is aborted
         /// </remarks>
-        protected abstract GameStatusResult InternalBuildStatusResult(SbcContext context, GameSession session, GameData data);
+        protected abstract GameStatusResult InternalBuildStatusResult(SbcContext context, GameSession session, GameData data, String forPlayer);
 
         /// <summary>
-        /// Build the game status result
+        /// Build the game status result for a player
         /// </summary>
-        public GameStatusResult BuildStatusResult(SbcContext context, GameSession session, GameData data)
+        public GameStatusResult BuildStatusResult(SbcContext context, GameSession session, GameData data, String forPlayer)
         {
             if (context == null) throw new ArgumentNullException("context");
             if (session == null) throw new ArgumentNullException("session");
             if (data == null)
                 data = context.DataService.GetGameData(session.SessionID);
-            var result = InternalBuildStatusResult(context, session, data);
+            var result = InternalBuildStatusResult(context, session, data, forPlayer);
             if (result == null)
             {
                 // Check the status to set aborted status if no winner defined
