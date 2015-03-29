@@ -35,4 +35,19 @@ namespace SmallBasicChallenges
         public String Opponent { get; set; }
     }
 
+    /// <summary>
+    /// Class for the default playing result
+    /// </summary>
+    public class DefaultPlayingStatusResult : GameStatusResult
+    {
+        /// <summary>
+        /// Number of the current turn
+        /// </summary>
+        public int Turn { get; set; }
+        /// <summary>
+        /// Number of the player who need to play
+        /// </summary>
+        public int Player { get; set; }
+
+    }
 }

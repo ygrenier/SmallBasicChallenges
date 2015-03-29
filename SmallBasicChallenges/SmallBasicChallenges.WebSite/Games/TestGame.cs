@@ -30,9 +30,10 @@ namespace SmallBasicChallenges.WebSite.Games
         protected override GameStatusResult InternalBuildStatusResult(SbcContext context, GameSession session, GameData data, String forPlayer)
         {
             var player = session.GetPlayer(forPlayer);
-
-            return new GameStatusResult {
-                Status = "playing"
+            return new DefaultPlayingStatusResult {
+                Turn = data.CurrentTurn,
+                Player = data.CurrentPlayer,
+                Status = data.CurrentPlayer == player.PlayerNum ? "play" : "waiting-opponent"
             };
         }
 
