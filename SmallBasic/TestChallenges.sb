@@ -31,8 +31,8 @@ EndSub
 Sub PlayGame
   ' Game is finished ?
   
-  ' It's my turn ?
-  If gameStatus["player"] = game["playernum"] Then
+  ' It's my turn
+  If gameStatus["status"] = "play" Then
     ' Search value
     num = game["maxval"] - game["minval"]
     If num < 1 Then
@@ -52,7 +52,8 @@ Sub PlayGame
     EndIf
     TextWindow.WriteLine(currentPlayer + ":" + " => " + playResult["result"] + " : "+ game["minval"] + " < num < " + game["maxval"])
     TextWindow.Read()
-  Endif
+  EndIf
+    
 EndSub
 
 ' Call when the game is finished
@@ -67,7 +68,7 @@ Sub FailedGame
   TextWindow.Read()
 EndSub
 
-' Call before run the gamme loop
+' Call before run the game loop
 Sub BeforeGameLoop
   ' Save states
   games[currentPlayer] = game
@@ -84,7 +85,7 @@ Sub BeforeGameLoop
   gameStatus = gamesStatus[currentPlayer]
 EndSub
 
-' Call after run the gamme loop
+' Call after run the game loop
 Sub AfterGameLoop
 EndSub
 
@@ -185,12 +186,13 @@ Sub SbcGetGameStatus
     EndIf
     ' Pause
     Program.Delay(500)
-  ElseIf result["status"] = "success" Or result["status"] = "finished" Or result["status"] = "aborted" Then
+  Else 'If result["status"] = "success" Or result["status"] = "finished" Or result["status"] = "aborted" Then
     game["tries"] = 0
     gameStatus = result
   EndIf
 EndSub
 Sub SbcPlay
   playResult = Network.GetWebPageContents(config["server"] + "/play?token=" + game["token"] + "&command=" + playCommand)
+  TextWindow.WriteLine(currentPlayer + " : " + playResult)
 EndSub
   

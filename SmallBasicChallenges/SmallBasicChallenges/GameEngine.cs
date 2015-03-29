@@ -48,6 +48,35 @@ namespace SmallBasicChallenges
         }
 
         /// <summary>
+        /// Internal play
+        /// </summary>
+        /// <remarks>
+        /// Return null if the game is finished, the session need to have a winner defined, else the game is aborted
+        /// </remarks>
+        protected abstract GameStatusResult InternalPlay(SbcContext context, GameSession session, GameData data, string player, string command);
+
+        /// <summary>
+        /// Execute a play command
+        /// </summary>
+        public GameStatusResult Play(SbcContext context, GameSession session, GameData data, string player, string command)
+        {
+            if (context == null) throw new ArgumentNullException("context");
+            if (session == null) throw new ArgumentNullException("session");
+            if (data == null)
+                data = context.DataService.GetGameData(session.SessionID);
+            var result = InternalPlay(context, session, data, player, command);
+            if (result == null)
+            {
+                // Check the status to set aborted status if no winner defined
+                if (session.Status == GameSessionStatus.Finished && session.Winner == 0)
+                {
+                    session.Status = GameSessionStatus.Aborted;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// List all names of the engine
         /// </summary>
         public abstract IEnumerable<String> GetNames();

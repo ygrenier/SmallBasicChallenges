@@ -291,6 +291,22 @@ namespace SmallBasicChallenges.WebSite.Controllers
         {
             try
             {
+                // Create the context
+                var context = new SbcContext(dataService);
+
+                // Find the game session
+                var session = context.FindSessionFromPlayer(token);
+                if (session == null)
+                    throw new InvalidOperationException("Unknown token.");
+
+                // Get the player
+                var player = session.GetPlayer(token);
+                if (!String.Equals(player.IpAddress, this.Request.UserHostAddress, StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidOperationException("Your are not authorized.");
+
+                // Execute the command
+                return GameResult(context.GamePlay(session, token, command));
+
                 throw new NotImplementedException();
 
                 //// Find the player

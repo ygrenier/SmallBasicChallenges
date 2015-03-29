@@ -18,6 +18,11 @@ namespace SmallBasicChallenges.Tests
             return null;
         }
 
+        protected override GameStatusResult InternalPlay(SbcContext context, GameSession session, GameData data, string player, string command)
+        {
+            return null;
+        }
+
         public override IEnumerable<string> GetNames()
         {
             return new String[] { "Test1", "Test2" };

@@ -253,6 +253,25 @@ namespace SmallBasicChallenges
         }
 
         /// <summary>
+        /// Execute a play command
+        /// </summary>
+        public GameStatusResult GamePlay(GameSession session, String player, String command)
+        {
+            if (session == null) throw new ArgumentNullException("session");
+
+            var game = GameService.FindGame(session.Game);
+            var gameData = DataService.GetGameData(session.SessionID);
+            var result = game.Play(this, session, gameData, player, command);
+            // No result !
+            if (result == null)
+            {
+                // We returns the status
+                return GetStatusResult(session, player);
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Current data service
         /// </summary>
         public IDataService DataService { get; private set; }

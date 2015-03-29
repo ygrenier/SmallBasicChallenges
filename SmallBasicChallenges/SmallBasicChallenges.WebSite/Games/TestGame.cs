@@ -38,6 +38,14 @@ namespace SmallBasicChallenges.WebSite.Games
         }
 
         /// <summary>
+        /// Playing
+        /// </summary>
+        protected override GameStatusResult InternalPlay(SbcContext context, GameSession session, GameData data, string player, string command)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// List of names
         /// </summary>
         public override IEnumerable<string> GetNames()
