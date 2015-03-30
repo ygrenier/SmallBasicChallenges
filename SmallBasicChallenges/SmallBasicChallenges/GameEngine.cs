@@ -35,16 +35,28 @@ namespace SmallBasicChallenges
             if (session == null) throw new ArgumentNullException("session");
             if (data == null)
                 data = context.DataService.GetGameData(session.SessionID);
-            var result = InternalBuildStatusResult(context, session, data, forPlayer);
-            if (result == null)
+            try
             {
-                // Check the status to set aborted status if no winner defined
-                if (session.Status == GameSessionStatus.Finished && session.Winner == 0)
+                var result = InternalBuildStatusResult(context, session, data, forPlayer);
+                if (result == null)
                 {
-                    session.Status = GameSessionStatus.Aborted;
+                    // Check the status to set aborted status if no winner defined
+                    if (session.Status == GameSessionStatus.Finished && session.Winner == 0)
+                    {
+                        session.Status = GameSessionStatus.Aborted;
+                    }
                 }
+                return result;
             }
-            return result;
+            catch (Exception ex)
+            {
+                return new FailedPlayingStatusResult {
+                    Player = data.CurrentPlayer,
+                    Turn = data.CurrentTurn,
+                    Message = ex.GetBaseException().Message,
+                    Status = "failed"
+                };
+            }
         }
 
         /// <summary>
@@ -62,8 +74,14 @@ namespace SmallBasicChallenges
         {
             if (context == null) throw new ArgumentNullException("context");
             if (session == null) throw new ArgumentNullException("session");
+
+            // If the game is not playing, invalidoperation
+            if (session.Status != GameSessionStatus.Playing)
+                throw new InvalidOperationException("The game is not playing.");
+
             if (data == null)
                 data = context.DataService.GetGameData(session.SessionID);
+
             var result = InternalPlay(context, session, data, player, command);
             if (result == null)
             {

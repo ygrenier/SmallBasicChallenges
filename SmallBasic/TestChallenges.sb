@@ -43,14 +43,12 @@ Sub PlayGame
     playCommand = num
     SbcPlay()
     ' Our num is before this to found
-    If playResult["result"] = "before" Then
+    If playResult["status"] = "before" Then
       game["minval"] = num
-    ElseIf playResult["result"] = "after" Then
+    ElseIf playResult["status"] = "after" Then
       game["maxval"] = num
-    ElseIf playResult["result"] = "wins" Then
-      
     EndIf
-    TextWindow.WriteLine(currentPlayer + ":" + " => " + playResult["result"] + " : "+ game["minval"] + " < num < " + game["maxval"])
+    TextWindow.WriteLine(currentPlayer + ":" + " => " + playResult["status"] + " : "+ game["minval"] + " < num < " + game["maxval"])
     TextWindow.Read()
   EndIf
     

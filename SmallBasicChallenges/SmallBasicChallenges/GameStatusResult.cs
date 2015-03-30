@@ -50,4 +50,16 @@ namespace SmallBasicChallenges
         public int Player { get; set; }
 
     }
+
+    /// <summary>
+    /// Class for a failed playing result
+    /// </summary>
+    public class FailedPlayingStatusResult : DefaultPlayingStatusResult
+    {
+        /// <summary>
+        /// Error message
+        /// </summary>
+        public String Message { get; set; }
+    }
+
 }

@@ -42,7 +42,42 @@ namespace SmallBasicChallenges.WebSite.Games
         /// </summary>
         protected override GameStatusResult InternalPlay(SbcContext context, GameSession session, GameData data, string player, string command)
         {
-            throw new NotImplementedException();
+            var ps = session.GetPlayer(player);
+
+            // If invalid player return an error
+            if (ps.PlayerNum != data.CurrentPlayer)
+                throw new InvalidOperationException("Not your turn.");
+
+            // Next turn
+            data.CurrentTurn++;
+            data.CurrentPlayer = ((data.CurrentPlayer + 1) % 2) + 1;
+
+            // Save data
+            context.DataService.Save(data);
+
+            // Get the num
+            var num = int.Parse(command);
+            var r = num.CompareTo((int)data.Data["NumberToFind"]);
+            if (r < 0)
+            {
+                return new GameStatusResult {
+                    Status = "before"
+                };
+            }
+            else if (r > 0)
+            {
+                return new GameStatusResult {
+                    Status = "after"
+                };
+            }
+            else
+            {
+                // Wins then end the game
+                session.Winner = ps.PlayerNum;
+                context.SetGameSessionStatus(session, GameSessionStatus.Finished, true);
+                // Return null to end the game
+                return null;
+            }
         }
 
         /// <summary>

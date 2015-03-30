@@ -306,59 +306,6 @@ namespace SmallBasicChallenges.WebSite.Controllers
 
                 // Execute the command
                 return GameResult(context.GamePlay(session, token, command));
-
-                throw new NotImplementedException();
-
-                //// Find the player
-                //var player = GetPlayer(token);
-                //// Get the game
-                //var game = _Games[player.GameID];
-                //if (game.GameStatus == "finished" || game.GameStatus == "aborted")
-                //    return GameResult(new { status = game.GameStatus, result = game.GameStatus });
-
-                //// Get test game
-                //var testGame = GetTestGame(player.GameID);
-
-                //// Is this the turn of the player ?
-                //if (player.PlayerNum != testGame.TurnPlayer)
-                //{
-                //    return GameResult(new {
-                //        status = game.GameStatus,
-                //        turn = testGame.TurnCount + 1,
-                //        player = testGame.TurnPlayer,
-                //        result = "failed"
-                //    });
-                //}
-
-                //// Next turn
-                //testGame.TurnCount++;
-                //testGame.TurnPlayer = testGame.TurnPlayer == 1 ? 2 : 1;
-
-                //// Get the num
-                //var num = int.Parse(command);
-                //var r = num.CompareTo(testGame.NumberToFind);
-                //if (r < 0)
-                //{
-                //    return GameResult(new {
-                //        result = "before"
-                //    });
-                //}
-                //else if (r > 0)
-                //{
-                //    return GameResult(new {
-                //        result = "after"
-                //    });
-                //}
-                //else
-                //{
-                //    // Wins the end the game
-                //    testGame.Winner = player.PlayerNum;
-                //    game.GameStatus = "finished";
-                //    return GameResult(new {
-                //        result = "wins"
-                //    });
-                //}
-
             }
             catch (Exception ex)
             {
