@@ -37,6 +37,9 @@ namespace SmallBasicChallenges
                 data = context.DataService.GetGameData(session.SessionID);
             try
             {
+                // If the game is finished we return null
+                if (session.Status == GameSessionStatus.Finished || session.Status == GameSessionStatus.Aborted)
+                    return null;
                 var result = InternalBuildStatusResult(context, session, data, forPlayer);
                 if (result == null)
                 {
