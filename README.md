@@ -1,6 +1,6 @@
 # Small Basic Challenges
 
-This projet is some research for un concept of Small Basic Challenge between two Players.
+This projet is some research for a concept of Small Basic Challenge between two Players.
 
 ## Concept
 
@@ -24,7 +24,7 @@ The process :
 		- Send to server is decision and receive status
 		- If failed retry
 		- If game finished go to End Phase
-	- If it waiting opponnent
+	- If it waiting opponent
 		- Wait and restart Game Phase
 	- If game finished go to End Phase
 	- Wait and restart Game Phase
