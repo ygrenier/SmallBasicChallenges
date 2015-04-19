@@ -86,9 +86,14 @@ namespace SmallBasicChallenges
                 {
                     // Abort the session and the player sessions
                     DataService.AbortSession(session);
+                    DataService.SaveHistory(session, DataService.GetGameData(session.SessionID)); 
                     player = null;
                     session = null;
                     opponentPlayer = null;
+                }
+                else
+                {
+                    DataService.SaveHistory(session, DataService.GetGameData(session.SessionID)); 
                 }
                 // Return the session
                 if (session != null)
@@ -127,6 +132,7 @@ namespace SmallBasicChallenges
                 session.Player2.PlayerNum = 2;
                 DataService.Save(session.Player1);
                 DataService.Save(session.Player2);
+                DataService.SaveHistory(session, null);
                 return session;
             }
 
@@ -272,6 +278,7 @@ namespace SmallBasicChallenges
             var game = GameService.FindGame(session.Game);
             var gameData = DataService.GetGameData(session.SessionID);
             var result = game.Play(this, session, gameData, player, command);
+            DataService.SaveHistory(session, gameData); 
             // No result !
             if (result == null)
             {

@@ -16,6 +16,7 @@ namespace SmallBasicChallenges
         List<SessionPlayer> _ActivePlayerSessions = new List<SessionPlayer>();
         Dictionary<String, GameSession> _GameSessions = new Dictionary<String, GameSession>(StringComparer.OrdinalIgnoreCase);
         Dictionary<String, GameData> _GameDatas = new Dictionary<string, GameData>(StringComparer.OrdinalIgnoreCase);
+        Dictionary<String, IList<GameHistory>> _GameHistory = new Dictionary<string, IList<GameHistory>>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Find an active player session by the player ID or the token
@@ -185,6 +186,22 @@ namespace SmallBasicChallenges
         {
             CleanWaitingList();
             return _WaitingPlayers.Count;
+        }
+
+        /// <summary>
+        /// Save a history
+        /// </summary>
+        public GameHistory SaveHistory(GameSession session, GameData gameData)
+        {
+            IList<GameHistory> list;
+            if (!_GameHistory.TryGetValue(session.SessionID, out list))
+            {
+                list = new List<GameHistory>();
+                _GameHistory[session.SessionID] = list;
+            }
+            var result = GameHistory.BuildHistory(session, gameData);
+            list.Add(result);
+            return result;
         }
 
     }

@@ -73,5 +73,10 @@ namespace SmallBasicChallenges.WebSite.Context
             return dataService.GetWaitingCount();
         }
 
+        public GameHistory SaveHistory(GameSession session, GameData gameData)
+        {
+            return dataService.SaveHistory(session, gameData);
+        }
+
     }
 }

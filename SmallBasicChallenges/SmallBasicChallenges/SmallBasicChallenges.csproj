@@ -42,6 +42,7 @@
     <Compile Include="DefaultGameService.cs" />
     <Compile Include="GameData.cs" />
     <Compile Include="GameEngine.cs" />
+    <Compile Include="GameHistory.cs" />
     <Compile Include="GameSession.cs" />
     <Compile Include="GameStatusResult.cs" />
     <Compile Include="IDataService.cs" />

@@ -84,6 +84,12 @@ namespace SmallBasicChallenges
         /// Returns the count of waiting player
         /// </summary>
         int GetWaitingCount();
+
+        /// <summary>
+        /// Save a history
+        /// </summary>
+        GameHistory SaveHistory(GameSession session, GameData gameData);
+
     }
 
 }
