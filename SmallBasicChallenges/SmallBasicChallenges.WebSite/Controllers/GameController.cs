@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmallBasicChallenges.WebSite.Context;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,8 +76,6 @@ namespace SmallBasicChallenges.WebSite.Controllers
         }
         #endregion
 
-        static MemoryDataService dataService = new MemoryDataService();
-
         ActionResult GameResult(Object content)
         {
             if (Request.IsAjaxRequest())
@@ -110,7 +109,7 @@ namespace SmallBasicChallenges.WebSite.Controllers
             try
             {
                 // Create the context
-                var context = new SbcContext(dataService);
+                var context = new WebContext();
 
                 // Get the player id
                 String playerID = context.CalculatePlayerID(player, this.Request.UserHostAddress, game);
@@ -144,7 +143,7 @@ namespace SmallBasicChallenges.WebSite.Controllers
             try
             {
                 // Create the context
-                var context = new SbcContext(dataService);
+                var context = new WebContext();
 
                 // Find the game session
                 var session = context.FindSessionFromPlayer(token);
@@ -179,7 +178,7 @@ namespace SmallBasicChallenges.WebSite.Controllers
             try
             {
                 // Create the context
-                var context = new SbcContext(dataService);
+                var context = new WebContext();
 
                 // Find the game session
                 var session = context.FindSessionFromPlayer(token);

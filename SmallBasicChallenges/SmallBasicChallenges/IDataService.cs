@@ -73,7 +73,7 @@ namespace SmallBasicChallenges
         /// <summary>
         /// Save game data
         /// </summary>
-        void Save(GameData date);
+        void Save(GameData data);
 
         /// <summary>
         /// Returns the count of game session in play status
