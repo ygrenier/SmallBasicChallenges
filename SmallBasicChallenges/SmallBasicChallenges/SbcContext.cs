@@ -179,6 +179,16 @@ namespace SmallBasicChallenges
         }
 
         /// <summary>
+        /// Define the winner of a the session
+        /// </summary>
+        public void SetWinner(GameSession session, int winner)
+        {
+            // Wins then end the game
+            session.Winner = winner;
+            SetGameSessionStatus(session, GameSessionStatus.Finished, true);
+        }
+
+        /// <summary>
         /// Calculate the current status result
         /// </summary>
         public GameStatusResult GetStatusResult(GameSession session, String playerIdOrToken)
@@ -280,7 +290,6 @@ namespace SmallBasicChallenges
         /// Current game service
         /// </summary>
         public IGameService GameService { get; private set; }
-
     }
 
 }

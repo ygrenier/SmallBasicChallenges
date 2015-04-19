@@ -94,6 +94,10 @@ namespace SmallBasicChallenges
                     session.Status = GameSessionStatus.Aborted;
                 }
             }
+
+            // Save the datas
+            context.DataService.Save(session);
+            context.DataService.Save(data);
             return result;
         }
 

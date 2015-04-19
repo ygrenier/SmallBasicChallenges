@@ -72,9 +72,8 @@ namespace SmallBasicChallenges.WebSite.Games
             }
             else
             {
-                // Wins then end the game
-                session.Winner = ps.PlayerNum;
-                context.SetGameSessionStatus(session, GameSessionStatus.Finished, true);
+                // Set the winner
+                context.SetWinner(session, ps.PlayerNum);
                 // Return null to end the game
                 return null;
             }
