@@ -1,8 +1,14 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
+using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.WindowsAzure.Storage.Blob;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SmallBasicChallenges.WebSite.Context
 {
@@ -12,6 +18,78 @@ namespace SmallBasicChallenges.WebSite.Context
     public class WebDataService : IDataService
     {
         static MemoryDataService dataService = new MemoryDataService();
+        CloudStorageAccount _Account;
+        CloudQueueClient _QueueClient;
+        CloudQueue _QueueWaitingList;
+
+        /// <summary>
+        /// Create a new DataService
+        /// </summary>
+        public WebDataService()
+        {
+            try
+            {
+                _Account = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["DataService:StorageConnectionString"]);
+            }
+            catch (Exception)
+            {
+                _Account = CloudStorageAccount.DevelopmentStorageAccount;
+            }
+        }
+
+        CloudQueueClient GetQueueClient()
+        {
+            if (_QueueClient == null)
+            {
+                _QueueClient = _Account.CreateCloudQueueClient();
+            }
+            return _QueueClient;
+        }
+
+        CloudQueue GetWaitingListQueue()
+        {
+            if (_QueueWaitingList == null)
+            {
+                var client = GetQueueClient();
+                _QueueWaitingList = client.GetQueueReference("waitingplayers");
+                _QueueWaitingList.CreateIfNotExists();
+            }
+            return _QueueWaitingList;
+        }
+
+        /// <summary>
+        /// Search a Waiting Player
+        /// </summary>
+        public SessionPlayer GetWaitingPlayer(string game, string playerID)
+        {
+            var queue = GetWaitingListQueue();
+            CloudQueueMessage message;
+            while ((message = queue.GetMessage(TimeSpan.FromMilliseconds(200))) != null)
+            {
+                SessionPlayer player = JsonConvert.DeserializeObject<SessionPlayer>(message.AsString);
+                queue.DeleteMessage(message);
+                if (player.PlayerID != playerID)
+                    return player;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Register a player as waiting
+        /// </summary>
+        public SessionPlayer RegisterInWaitingList(string game, string playerID, string playerName, string ipAddress)
+        {
+            SessionPlayer player = new SessionPlayer {
+                Game = game,
+                PlayerID = playerID,
+                PlayerName = playerName,
+                IpAddress = ipAddress
+            };
+            var queue = GetWaitingListQueue();
+            CloudQueueMessage message = new CloudQueueMessage(JsonConvert.SerializeObject(player));
+            queue.AddMessage(message, TimeSpan.FromSeconds(2));
+            return player;
+        }
 
         public SessionPlayer FindActiveSessionPlayer(string idOrToken)
         {
@@ -28,19 +106,9 @@ namespace SmallBasicChallenges.WebSite.Context
             return dataService.GetGameData(sessionID);
         }
 
-        public SessionPlayer GetWaitingPlayer(string game, string playerID)
-        {
-            return dataService.GetWaitingPlayer(game, playerID);
-        }
-
         public GameSession CreateGameSession(string game, SessionPlayer player1, SessionPlayer player2)
         {
             return dataService.CreateGameSession(game, player1, player2);
-        }
-
-        public SessionPlayer RegisterInWaitingList(string game, string playerID, string playerName, string ipAddress)
-        {
-            return dataService.RegisterInWaitingList(game, playerID, playerName, ipAddress);
         }
 
         public void AbortSession(GameSession session)
